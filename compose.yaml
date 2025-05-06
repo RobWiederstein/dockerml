@@ -4,8 +4,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      platform: linux/amd64
-    image: dockerml-project:latest # Optional name for the project image
+    image: dockerml-project:latest
+    platform: linux/amd64 # Optional name for the project image
     volumes:
       # Adjust container path based on WORKDIR in project Dockerfile (/app or /work)
       - ./docs:/app/_targets/user/results
