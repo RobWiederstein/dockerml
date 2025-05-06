@@ -1,0 +1,40 @@
+# --- General ---
+# Version control directories and files
+.git
+.gitignore
+.gitattributes
+
+# Docker files (if not needed in context, often managed separately)
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# Operating System specific files
+.DS_Store
+Thumbs.db
+
+# R specific
+.Rproj.user/
+.Rhistory
+.RData
+# .Renviron
+
+# renv
+renv/library/
+renv/staging/
+
+# data
+data/raw/
+data/
+*.csv
+*.parquet
+*.rds
+*.feather
+
+# Output files
+output/
+results/
+reports/
+*.html
+*.pdf
+figures/

@@ -1,0 +1,74 @@
+# Dockerfile.base
+ARG R_VERSION=4.4.0
+FROM rocker/r-base:${R_VERSION} AS base
+
+# Avoid prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies for R package building and CLI tools
+RUN apt-get update -y && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    make \
+    libssl-dev \
+    libcurl4-openssl-dev \
+    libxml2-dev \
+    libcairo2-dev \
+    libxt-dev \
+    libfreetype-dev \
+    libfontconfig1-dev \
+    libbz2-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libpng-dev \
+    libtiff-dev \
+    libjpeg62-turbo-dev \
+    git \
+    tree \
+    wget \
+    ca-certificates \
+    pkg-config \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Use the latest stable 1.4.x version - CHECK QUARTO.ORG FOR EXACT NUMBER
+# Use the desired Quarto version (e.g., latest 1.4.x)
+ARG QUARTO_VERSION="1.4.554"
+
+RUN apt-get update && apt-get install -y --no-install-recommends wget ca-certificates && \
+    # --- Modification Starts ---
+    # Define the architecture we need to match the amd64 base image
+    _FORCED_ARCH="amd64" && \
+    # Construct URL using the forced architecture
+    QUARTO_DL_URL="https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-${_FORCED_ARCH}.deb" && \
+    # --- Modification Ends ---
+    wget "${QUARTO_DL_URL}" -O quarto.deb && \
+    # This will now install an amd64 package onto an amd64 system (within the build env)
+    dpkg -i quarto.deb && \
+    rm quarto.deb && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Ensure PATH is correct (usually /opt/quarto/bin or /usr/local/bin)
+ENV PATH="/opt/quarto/bin:${PATH}"
+
+# Install renv globally in R
+RUN R -e "install.packages('renv', repos = 'https://cloud.r-project.org/')"
+
+# --- Install R packages using renv ---
+# Set a temp workdir for renv build step to optimize caching
+WORKDIR /tmp/renv-build
+
+# Copy ONLY the lockfile into this temporary location
+# Assumes renv.lock is in the build context (same directory as this Dockerfile)
+COPY renv.lock .
+
+# Run renv::restore() to install packages defined in the lockfile
+# This installs packages into the main R library within the image
+# This will be the time-consuming step during the build
+RUN R -e "renv::restore()"
+# --- END renv SECTION ---
+
+# Reset workdir for images based on this one
+WORKDIR /work
+
+# Base image usually doesn't need CMD or ENTRYPOINT

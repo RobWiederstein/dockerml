@@ -1,0 +1,50 @@
+name: Run Dockerized R Pipeline & Deploy Report
+
+# Controls when the workflow will run
+on:
+  push:
+    branches:
+      - main      # Runs on pushes to the main branch
+      - master    # Also runs on pushes to master (if you use that)
+  # You can also add pull_request triggers, manual triggers (workflow_dispatch), etc.
+
+jobs:
+  build-run-and-deploy:
+    runs-on: ubuntu-latest # Use a Linux runner, which has Docker pre-installed
+
+    steps:
+      # Step 1: Check out your repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Or a more recent version
+
+      # Step 2: Set up Docker Buildx (recommended for better caching, etc.)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Step 3: Ensure your pipeline script is executable
+      # (Git should preserve this, but it's a good safeguard)
+      - name: Make run_pipeline.sh executable
+        run: chmod +x ./run_pipeline.sh
+
+      # Step 4: Run your pipeline
+      # This script should handle 'docker compose up --build'
+      # The 'open browser' part of your run_pipeline.sh will be ignored or
+      # might cause a harmless error in the CI environment (no browser).
+      # Ensure run_pipeline.sh exits with a non-zero code if Docker Compose fails.
+      - name: Build Docker image and run pipeline
+        run: ./run_pipeline.sh
+
+      # Step 5: Deploy ./docs directory to GitHub Pages
+      # This step is optional if you don't want to publish to GitHub Pages.
+      # It commits the contents of ./docs (where your index.html is)
+      # to the gh-pages branch, which can then be served by GitHub Pages.
+      - name: Deploy report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3 # A popular action for this
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }} # Provided by GitHub Actions
+          publish_dir: ./docs                     # The directory to publish
+          # publish_branch: gh-pages              # Default branch is gh-pages
+          # user_name: 'github-actions[bot]'      # Custom commit user
+          # user_email: 'github-actions[bot]@users.noreply.github.com' # Custom commit email
+          # commit_message: 'Automated report deployment' # Custom commit message
+          # allow_empty_commit: false             # Prevent commit if no changes

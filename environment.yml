@@ -1,0 +1,7 @@
+name: dockerml-host-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python
+  - docker-compose

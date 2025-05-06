@@ -1,0 +1,27 @@
+# R & targets & renv
+.Rproj.user/
+.Rhistory
+.RData
+.Renviron
+_targets/
+renv/library/
+renv/staging/
+
+# Docker & OS
+.DS_Store
+Thumbs.db
+docs/
+.quarto/
+
+# generated from local host
+index_files/
+index.html
+
+# swap
+.gitignore.swp
+.here
+
+.Rproj.user
+.Rdata
+.httr-oauth
+.quarto

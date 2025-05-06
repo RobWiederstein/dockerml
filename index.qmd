@@ -1,0 +1,211 @@
+---
+title: "Pima Indians"
+format:
+  html:
+    theme: united
+execute:
+  echo: false
+  warning: false
+  message: false
+  error: true
+  eval: true
+  cache: FALSE
+toc: true
+toc-depth: 2
+bibliography: resources/project.bib
+csl: resources/ieee.csl
+---
+
+```{r setup, include=FALSE, eval=TRUE}
+library("targets")
+library("quarto")
+library("tarchetypes")
+library("ggplot2")
+library("visNetwork")
+library("kableExtra")
+targets::tar_load(c(
+    downloaded_file_info,
+    tbl_raw_summary_0,
+    tbl_raw_summary_1,
+    tbl_imputed_summary_0,
+    tbl_imputed_summary_1,
+    plot_raw_missing,
+    plot_raw_outliers,
+    plot_imputed_outliers,
+    plot_imputed_corr,
+    plot_imputed_missing,
+    plot_roc_curve,
+    tbl_test_set_results
+
+))
+# functions
+format_table <- function(data, ...){
+  kbl(data) %>% 
+  kable_classic()
+}
+```
+
+# Introduction
+
+This project involves reproducible research with Docker.[@nust_rockerverse_2020] The Pima Indians Diabetes Dataset is a well-known collection of health information frequently used by students and professionals learning data science and machine learning; you'll often find it used in examples on websites like Kaggle. 
+
+It originally came from a major health study conducted by the National Institute of Diabetes and Digestive and Kidney Diseases (NIDDK). The data focuses specifically on women, aged 21 and older, who are of Pima heritage and lived near Phoenix, Arizona. The main goal when using this dataset is typically to predict whether a person has diabetes (a 'yes' or 'no' outcome) based on several common medical measurements recorded for each individual. 
+
+These measurements include the number of times pregnant, blood glucose levels, blood pressure, body mass index (BMI), insulin levels, age, and a diabetes pedigree function score which relates to family history. This dataset is popular for practice because it's easily available and contains realistic challenges found in real-world data. 
+
+One particular challenge it's famous for is the presence of zero values in columns where that's biologically impossible, like blood pressure, skin thickness, or BMI. This requires data scientists to figure out how to handle these seemingly incorrect or missing values before building predictive models. 
+
+# Workflow
+
+The workflow proceeds according to the chart below.
+
+```{r}
+#| label: workflow-image
+
+# Capture standard output and messages into the 'junk' variable
+junk <- capture.output({
+  # Run the function, assigning the resulting widget to a variable
+  vis_widget <- targets::tar_visnetwork(
+    targets_only = TRUE,
+    zoom_speed = .5,
+    reporter = "silent" # Keep silencing targets messages
+  )
+# Specify which output types to capture
+}, type = c("output", "message"))
+
+# Now, explicitly display the widget object. R/RStudio will handle
+# showing it in the Viewer pane or inline.
+vis_widget
+```
+
+# Raw 
+
+## File Info
+
+```{r}
+#| label: download-file-info
+format_table(downloaded_file_info, full_width = F)
+```
+
+
+# Recoded Data
+
+One of the problems with the Pima Indians Diabetes dataset is that a number of observations are coded as zero when they should have been coded "NA".  For example, a persons `blood_pressure` was coded as 0 when that's physically impossible to participate and have no blood pressure.
+
+## Summary
+
+### Normal
+
+```{r}
+#| label: tbl-raw-summary-0
+format_table(tbl_raw_summary_0)
+```
+
+### Diabetic
+
+```{r}
+#| label: tbl-raw-summary-1
+format_table(tbl_raw_summary_1)
+```
+
+## Outliers
+
+```{r}
+#| label: plot_imputed_outliers
+plot_raw_outliers + theme_minimal()
+```
+
+## Missing
+
+```{r}
+#| label: plot_raw_missing
+plot_raw_missing
+```
+
+# Imputed Data
+
+Any outliers beyond three standard deviations from the mean are set to NA.  With the values that were improperly coded and the outliers set to NA, there were a total number of XXX NAs.
+
+## Summary
+
+### Normal
+
+```{r}
+#| label: tbl-imputed-summary
+format_table(tbl_imputed_summary_0)
+```
+
+### Diabetic
+
+```{r}
+#| label: tbl_imputed_summary_1
+format_table(tbl_imputed_summary_1)
+```
+
+## Outliers
+
+```{r}
+#| label: plot-imputed-outliers
+plot_imputed_outliers
+```
+
+## Correlogram
+
+```{r}
+#| label: plot-imputed-corr
+plot_imputed_corr
+```
+
+## Missing
+
+```{r}
+#| label: plot-imputed-missing
+plot_imputed_missing
+```
+
+# Models
+
+## KNN
+
+The K-Nearest Neighbors (KNN) algorithm is a foundational and intuitive method in supervised machine learning, applicable to both classification and regression problems, with roots tracing back to non-parametric statistics work by Fix and Hodges in 1951 and formal analysis by Cover and Hart in 1967. Its core theory rests on the simple idea that similar data points exist in close proximity in the feature space. KNN is considered an instance-based, or "lazy," learning algorithm because it doesn't build an explicit model during training; instead, it memorizes the entire labeled training dataset. When predicting an outcome for a new, unseen data point, the algorithm identifies the 'K' closest data points (the "nearest neighbors") from the training set based on a chosen distance metric, typically Euclidean distance. For classification, the prediction is the most frequent class label among these K neighbors (majority vote), while for regression, the prediction is usually the average or median of the neighbors' values. The performance of KNN hinges critically on the choice of 'K' (balancing bias and variance), the selection of an appropriate distance metric, and often requires feature scaling, as distance calculations are sensitive to the range and units of the input variables.
+
+## Logistic Regression
+
+Logistic regression is a fundamental statistical method and supervised learning algorithm primarily used for binary classification problems, aiming to predict the probability of an observation belonging to one of two outcomes (e.g., yes/no, pass/fail). Developed significantly by statistician David Cox in the mid-20th century, it's widely applied across various fields. Unlike linear regression, it models the probability (p) of the default class (typically '1') using the logistic function (also known as the sigmoid function):
+
+$$
+p = \frac{1}{1 + \exp(-z)}
+$$
+
+
+This S-shaped function takes an input z, which is a linear combination of the predictor variables , and transforms it into a probability value between 0 and 1. The linear combination input (z) actually represents the log-odds (or logit) of the event occurring. This means logistic regression models the log-odds as a linear function of the predictors:
+
+$$
+\log\left(\frac{p}{1-p}\right) = z = \beta_0 + \beta_1x_1 + \dots + \beta_nx_n
+$$
+
+As a parametric model, logistic regression learns the coefficients $$(β i)$$ from the training data, typically through an iterative optimization process called Maximum Likelihood Estimation (MLE). The final output probability (p) is then usually converted into a class prediction by applying a threshold (commonly 0.5).
+
+# Results
+
+## Receiver Operator Curve
+
+The Receiver Operating Characteristic (ROC) curve is a fundamental tool in machine learning and statistics for evaluating the performance of binary classification models. Originating from signal detection theory developed during World War II to analyze radar signals, the ROC curve graphically illustrates a classifier's diagnostic ability across all possible classification thresholds. It plots the True Positive Rate (TPR), also known as sensitivity or recall (the proportion of actual positives correctly identified), on the Y-axis against the False Positive Rate (FPR), which is equal to 1 minus specificity (the proportion of actual negatives incorrectly identified as positive), on the X-axis. Each point on the curve corresponds to a specific threshold used to convert the model's continuous output (like a probability score) into a binary decision (0 or 1); varying this threshold traces the curve. A model with better discriminative power will have a curve that bows towards the top-left corner (representing 100% TPR and 0% FPR), while a model performing no better than random chance lies along the diagonal line (TPR = FPR). The overall performance across all thresholds is commonly summarized by the Area Under the Curve (AUC or AUROC), a value ranging from 0.5 (random chance) to 1.0 (perfect classification), representing the probability that the model ranks a randomly chosen positive instance higher than a randomly chosen negative one.
+
+```{r}
+plot_roc_curve
+```
+
+## Scores
+
+```{r}
+format_table(tbl_test_set_results)
+```
+
+
+_Report generated at `r Sys.time()`_
+
+# References
+
+::: {#refs}
+:::
