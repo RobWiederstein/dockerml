@@ -187,7 +187,7 @@ Much of a project can be excluded from version control via the `.gitignore` file
 
 # Acknowledgements
 
-Some people and at least one company deserve special mention:
+Many thanks to the following people and projects that made this possible:
 
 - Will Landau, author of the `targets` package.  His Github profile is [here](https://github.com/wlandau/). Eli Lilly Inc. deserves some recognition as well.
 
