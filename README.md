@@ -170,7 +170,7 @@ flowchart TD
 
 Much of a project can be excluded from version control via the `.gitignore` file.  To give a reader greater context, the directory tree's first level is included below.
 
-<img src="./images/targets.jpg" alt="Local Host Files" width="100%">
+<img src="./images/dockerml_tree.jpg" alt="Local Host Files" width="100%">
 
 # Challenges
 
