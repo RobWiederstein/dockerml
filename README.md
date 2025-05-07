@@ -1,3 +1,4 @@
+<img src="images/target.jpg" alt="Workflow Visualization" width="100%">
 
 # dockerml
 
