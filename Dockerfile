@@ -1,4 +1,4 @@
-FROM robwiederstein/r-ml-base:4.4.0
+FROM --platform=linux/amd64 robwiederstein/r-ml-base:4.4.0
 
 WORKDIR /app
 
