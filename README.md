@@ -1,5 +1,5 @@
 |        |
-| ------ :|
+| ------: |
 | <img src="https://github.com/RobWiederstein/dockerml/blob/master/images/targets.jpg" alt="Workflow Visualization" width="100%"> |
 | A targets flowchart rendered via targets::tar_visnetwork() |
 
@@ -9,7 +9,7 @@ The goal of the `dockerml` project is to serve as a demonstration of modern repr
 
 To achieve peak reproducibility, several oft-cited tools are integrated: `git` underpins version control. The R environment itself, including all package dependencies and their exact versions, is managed by `renv`. The `targets` and its related package `tarchetypes` then builds the programming pipeline. The packages, R, and the environment is wrapped into a Docker container, providing a shareable, consistent runtime environment that executes identically across different machines. For workflow automation, a GitHub Actions workflow (defined in a YAML file within the .github/workflows directory of the repository) was created. Finally, for publishing, the scientific publishing platform quarto, is used to create a webpage via pandoc. This webpage displays plots and tables and also  incorporates a  citation strategy, managed by Zotero.
 
-# Workflow
+# Workflow Description
 
 The typical development and execution flow for this project follows these steps:
 
@@ -45,6 +45,68 @@ The typical development and execution flow for this project follows these steps:
 13. **Action: Deploy to GitHub Pages:** If the previous steps succeed and the trigger was a push to `main`/`master`, the `peaceiris/actions-gh-pages` step in the workflow takes the contents of the runner's `./docs` directory and pushes them to the `gh-pages` branch of the repository.
 
 14. **GitHub Pages Update:** GitHub automatically detects the update to the `gh-pages` branch and serves the new `index.html` and associated files at the project's GitHub Pages URL (e.g., `https://robwiederstein.github.io/dockerml/`).
+
+# Workflow Diagram
+
+```mermaid
+graph TD
+    subgraph Local Machine
+        A[1. Edit Code Locally] --> B(2. Save Files);
+        B --> C{3. Git Commit & Push};
+    end
+
+    subgraph GitHub & Actions Trigger
+        C --> D{4. Push Triggers GitHub Action};
+    end
+
+    subgraph GitHub Actions Runner
+        D --> E[5. Action: Checkout Code];
+        E --> F[Action: Build Docker Image];
+        F -- Includes --> G[System Libs Install];
+        F -- Includes --> H[Quarto CLI Install];
+        F -- Includes --> I[renv Pkg Install];
+        F -- Includes --> J[Copy Project Files];
+        I --> K{Build Complete: Image Ready};
+        K --> L[6. Action: Run Pipeline Script `./run_pipeline.sh`];
+        L --> M[7. Script: Run `docker compose up --build`];
+    end
+
+    subgraph Docker Container (via Docker Compose)
+        M --> N[8. Container: Start & Run `/entrypoint.sh`];
+        N --> O[9. Entrypoint: Run `targets::tar_make()`];
+        O -- Creates --> P{_targets data store};
+        O --> Q[10. Entrypoint: Run `quarto render index.qmd`];
+        P -- tar_load() --> Q;
+        Q -- Creates --> R[/app/index.html & /app/index_files];
+        R --> S[11. Entrypoint: Move files to `/app/_targets/user/results`];
+    end
+
+    subgraph GitHub Actions Runner (Post-Container)
+        S --> T{12. Volume Mount Mirrors Output to `./docs` on Runner};
+        T --> U[13. Action: Deploy `./docs` to gh-pages branch];
+    end
+
+    subgraph GitHub Pages
+        U --> V(14. GitHub Pages Site Updates);
+        V --> W([View Published Report]);
+    end
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style C fill:#f9f,stroke:#333,stroke-width:2px
+    style D fill:#ccf,stroke:#333,stroke-width:2px
+    style E fill:#ccf,stroke:#333,stroke-width:2px
+    style F fill:#ccf,stroke:#333,stroke-width:2px
+    style L fill:#ccf,stroke:#333,stroke-width:2px
+    style M fill:#ccf,stroke:#333,stroke-width:2px
+    style N fill:#cfc,stroke:#333,stroke-width:2px
+    style O fill:#cfc,stroke:#333,stroke-width:2px
+    style Q fill:#cfc,stroke:#333,stroke-width:2px
+    style S fill:#cfc,stroke:#333,stroke-width:2px
+    style T fill:#ccf,stroke:#333,stroke-width:2px
+    style U fill:#ccf,stroke:#333,stroke-width:2px
+    style V fill:#fcf,stroke:#333,stroke-width:2px
+    style W fill:#fcf,stroke:#333,stroke-width:2px
+```
 
 # Challenges
 
