@@ -50,7 +50,7 @@ The typical development and execution flow for this project follows these steps:
 
 ```mermaid
 flowchart TD
- subgraph subGraph0[" "]
+ subgraph subGraph0["Local Host"]
         A["Edit Code Locally"]
         B("Save Files")
         C{"Git Commit <br>&amp; Push"}
@@ -69,15 +69,15 @@ flowchart TD
         L["Action: Run Pipeline Script ./run_pipeline.sh"]
         M["Script: Run docker <br> compose up --build"]
   end
- subgraph subGraph3["Docker Container via Docker Compose"]
+ subgraph subGraph3["Docker Compose"]
         N["Container: Start & Run /entrypoint.sh"]
         O["Entrypoint: Run targets::tar_make()"]
         P{"_targets data store"}
-        Q@{ label: "Entrypoint: Run `quarto render index.qmd`" }
+        Q@{ label: "Entrypoint: Run quarto render index.qmd" }
         R["/app/index.html & /app/index_files"]
-        S@{ label: "Entrypoint: Move files to `/app/_targets/user/results`" }
+        S@{ label: "Entrypoint: Move files to /app/_targets/user/results" }
   end
- subgraph subGraph4["GitHub Actions Runner Post-Container // Removed parentheses here"]
+ subgraph subGraph4["GitHub Action Completed"]
         T@{ label: "Volume Mount Mirrors Output to `./docs` on Runner" }
         U@{ label: "Action: Deploy `./docs` to gh-pages branch" }
   end
@@ -85,7 +85,6 @@ flowchart TD
         V("GitHub Pages Site Updates")
         W(["View Published Report"])
   end
-
     A --> B
     B --> C
     C --> D
@@ -161,8 +160,7 @@ flowchart TD
     style U color:#000000
     style V color:#000000
     style W color:#000000
-    style subGraph0 stroke:#757575
-    style subGraph1 stroke:#757575
+    style subGraph1 color:none
     style subGraph2 stroke:#757575
     style subGraph5 stroke:#757575
     style subGraph4 stroke:#757575
