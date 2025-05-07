@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.554">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Pima Indians</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/quarto.js"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="index_files/libs/quarto-html/anchor.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="index_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="index_files/libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="index_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="index_files/libs/vis-9.1.0/vis-network.min.css" rel="stylesheet">
+<script src="index_files/libs/vis-9.1.0/vis-network.min.js"></script>
+<script src="index_files/libs/visNetwork-binding-2.1.2/visNetwork.js"></script>
+<script src="index_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="index_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#workflow" id="toc-workflow" class="nav-link" data-scroll-target="#workflow">Workflow</a></li>
+  <li><a href="#raw" id="toc-raw" class="nav-link" data-scroll-target="#raw">Raw</a>
+  <ul class="collapse">
+  <li><a href="#file-info" id="toc-file-info" class="nav-link" data-scroll-target="#file-info">File Info</a></li>
+  </ul></li>
+  <li><a href="#recoded-data" id="toc-recoded-data" class="nav-link" data-scroll-target="#recoded-data">Recoded Data</a>
+  <ul class="collapse">
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#outliers" id="toc-outliers" class="nav-link" data-scroll-target="#outliers">Outliers</a></li>
+  <li><a href="#missing" id="toc-missing" class="nav-link" data-scroll-target="#missing">Missing</a></li>
+  </ul></li>
+  <li><a href="#imputed-data" id="toc-imputed-data" class="nav-link" data-scroll-target="#imputed-data">Imputed Data</a>
+  <ul class="collapse">
+  <li><a href="#summary-1" id="toc-summary-1" class="nav-link" data-scroll-target="#summary-1">Summary</a></li>
+  <li><a href="#outliers-1" id="toc-outliers-1" class="nav-link" data-scroll-target="#outliers-1">Outliers</a></li>
+  <li><a href="#correlogram" id="toc-correlogram" class="nav-link" data-scroll-target="#correlogram">Correlogram</a></li>
+  <li><a href="#missing-1" id="toc-missing-1" class="nav-link" data-scroll-target="#missing-1">Missing</a></li>
+  </ul></li>
+  <li><a href="#models" id="toc-models" class="nav-link" data-scroll-target="#models">Models</a>
+  <ul class="collapse">
+  <li><a href="#knn" id="toc-knn" class="nav-link" data-scroll-target="#knn">KNN</a></li>
+  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression">Logistic Regression</a></li>
+  </ul></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
+  <ul class="collapse">
+  <li><a href="#receiver-operator-curve" id="toc-receiver-operator-curve" class="nav-link" data-scroll-target="#receiver-operator-curve">Receiver Operator Curve</a></li>
+  <li><a href="#scores" id="toc-scores" class="nav-link" data-scroll-target="#scores">Scores</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Pima Indians</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>This project involves reproducible research with Docker.<span class="citation" data-cites="nust_rockerverse_2020"><a href="#ref-nust_rockerverse_2020" role="doc-biblioref">[1]</a></span> The Pima Indians Diabetes Dataset is a well-known collection of health information frequently used by students and professionals learning data science and machine learning; you’ll often find it used in examples on websites like Kaggle.</p>
+<p>It originally came from a major health study conducted by the National Institute of Diabetes and Digestive and Kidney Diseases (NIDDK). The data focuses specifically on women, aged 21 and older, who are of Pima heritage and lived near Phoenix, Arizona. The main goal when using this dataset is typically to predict whether a person has diabetes (a ‘yes’ or ‘no’ outcome) based on several common medical measurements recorded for each individual.</p>
+<p>These measurements include the number of times pregnant, blood glucose levels, blood pressure, body mass index (BMI), insulin levels, age, and a diabetes pedigree function score which relates to family history. This dataset is popular for practice because it’s easily available and contains realistic challenges found in real-world data.</p>
+<p>One particular challenge it’s famous for is the presence of zero values in columns where that’s biologically impossible, like blood pressure, skin thickness, or BMI. This requires data scientists to figure out how to handle these seemingly incorrect or missing values before building predictive models.</p>
+</section>
+<section id="workflow" class="level1">
+<h1>Workflow</h1>
+<p>The workflow proceeds according to the chart below.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="visNetwork html-widget html-fill-item" id="htmlwidget-5750fc359c29166fecfc" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-5750fc359c29166fecfc">{"x":{"nodes":{"name":["downloaded_file_info","knn_best_auc","knn_conf_mat","knn_final_fit_pred","knn_last_fit","knn_last_mod","knn_last_workflow","knn_metrics","knn_mod","knn_recipe","knn_res","knn_workflow","lr_accuracy","lr_auc","lr_best","lr_best_auc","lr_conf_mat","lr_last_fit","lr_last_fit_pred","lr_last_mod","lr_last_workflow","lr_model","lr_recipe","lr_reg_grid","lr_res","lr_res_acc","lr_workflow","model_resamples","models","pima_data","pima_data_url","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_raw_missing","plot_raw_outliers","plot_roc_curve","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_raw_summary_0","tbl_raw_summary_1","tbl_test_set_results","test_set_results"],"type":["stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem"],"description":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"status":["uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.08699999999999999,0.02,0.003,0.001,0.246,0.001,0.001,0,0.001,0.005,30.553,0.001,0.002,0.078,0.023,0.019,0.002,0.15,0.001,0.001,0,0.011,0.013,0.003,1.88,0.002,0.005,0.001,0.045,0.234,0.001,0.007,0.131,0.073,0.032,0.005,0.02,0.001,0.001,0.036,0.037,0.021,0.121,0.068,0.008999999999999999,0.012,0.011,0.017,0.008999999999999999,0.006,0],"bytes":[306,258,230,298,133748,412,11215,2885,409,10684,181292,11241,222,7200,218,218,226,131815,301,519,12268,388,11698,438,1287105,3265,12168,1469239,11746,23105,0,14605,12782,12528,12845,12762,14475,3249,10112,96755,1040428,1122515,992228,1125215,1197523,633,624,636,635,332,247227],"branches":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"label":["downloaded_file_info","knn_best_auc","knn_conf_mat","knn_final_fit_pred","knn_last_fit","knn_last_mod","knn_last_workflow","knn_metrics","knn_mod","knn_recipe","knn_res","knn_workflow","lr_accuracy","lr_auc","lr_best","lr_best_auc","lr_conf_mat","lr_last_fit","lr_last_fit_pred","lr_last_mod","lr_last_workflow","lr_model","lr_recipe","lr_reg_grid","lr_res","lr_res_acc","lr_workflow","model_resamples","models","pima_data","pima_data_url","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_raw_missing","plot_raw_outliers","plot_roc_curve","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_raw_summary_0","tbl_raw_summary_1","tbl_test_set_results","test_set_results"],"color":["#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823"],"id":["downloaded_file_info","knn_best_auc","knn_conf_mat","knn_final_fit_pred","knn_last_fit","knn_last_mod","knn_last_workflow","knn_metrics","knn_mod","knn_recipe","knn_res","knn_workflow","lr_accuracy","lr_auc","lr_best","lr_best_auc","lr_conf_mat","lr_last_fit","lr_last_fit_pred","lr_last_mod","lr_last_workflow","lr_model","lr_recipe","lr_reg_grid","lr_res","lr_res_acc","lr_workflow","model_resamples","models","pima_data","pima_data_url","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_raw_missing","plot_raw_outliers","plot_roc_curve","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_raw_summary_0","tbl_raw_summary_1","tbl_test_set_results","test_set_results"],"level":[3,13,14,13,12,1,11,13,1,9,11,10,17,13,12,13,16,15,16,13,14,1,9,1,11,16,10,12,14,2,1,9,6,3,4,5,7,8,8,7,7,7,5,5,15,7,7,5,5,17,16],"shape":["dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot"]},"edges":{"from":["pima_data","model_resamples","knn_metrics","knn_last_fit","pima_split","knn_last_workflow","knn_last_mod","knn_workflow","knn_last_fit","pima_train","knn_workflow","pima_folds","knn_mod","knn_recipe","lr_res_acc","lr_best","lr_res","lr_res","model_resamples","lr_last_fit","lr_last_workflow","pima_split","lr_last_fit","lr_best","lr_last_mod","lr_workflow","pima_train","pima_folds","lr_reg_grid","lr_workflow","lr_last_fit","lr_model","lr_recipe","knn_res","lr_res","knn_best_auc","lr_best_auc","model_resamples","pima_data_url","pima_train","pima_raw_ol_to_na","pima_data","pima_raw","pima_raw_converted","pima_imputed","pima_split","pima_split","pima_imputed","pima_imputed","pima_imputed","pima_raw_converted","pima_raw_converted","models","pima_imputed","pima_imputed","pima_raw_converted","pima_raw_converted","test_set_results","lr_last_fit","knn_last_fit"],"to":["downloaded_file_info","knn_best_auc","knn_conf_mat","knn_final_fit_pred","knn_last_fit","knn_last_fit","knn_last_workflow","knn_last_workflow","knn_metrics","knn_recipe","knn_res","knn_res","knn_workflow","knn_workflow","lr_accuracy","lr_auc","lr_auc","lr_best","lr_best_auc","lr_conf_mat","lr_last_fit","lr_last_fit","lr_last_fit_pred","lr_last_mod","lr_last_workflow","lr_last_workflow","lr_recipe","lr_res","lr_res","lr_res","lr_res_acc","lr_workflow","lr_workflow","model_resamples","model_resamples","models","models","models","pima_data","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_raw_missing","plot_raw_outliers","plot_roc_curve","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_raw_summary_0","tbl_raw_summary_1","tbl_test_set_results","test_set_results","test_set_results"],"color":["#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823"],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":0.5},"layout":{"hierarchical":{"enabled":true,"levelSeparation":150,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem"],"color":["#354823","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="raw" class="level1">
+<h1>Raw</h1>
+<section id="file-info" class="level2">
+<h2 class="anchored" data-anchor-id="file-info">File Info</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<table class="lightable-classic table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">attributes</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">size</td>
+<td style="text-align: left;">23105</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">isdir</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mode</td>
+<td style="text-align: left;">644</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mtime</td>
+<td style="text-align: left;">2025-05-07 16:14:33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ctime</td>
+<td style="text-align: left;">2025-05-07 16:14:33</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">atime</td>
+<td style="text-align: left;">2025-05-07 16:14:33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">uid</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">gid</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">uname</td>
+<td style="text-align: left;">root</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">grname</td>
+<td style="text-align: left;">root</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="recoded-data" class="level1">
+<h1>Recoded Data</h1>
+<p>One of the problems with the Pima Indians Diabetes dataset is that a number of observations are coded as zero when they should have been coded “NA”. For example, a persons <code>blood_pressure</code> was coded as 0 when that’s physically impossible to participate and have no blood pressure.</p>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<section id="normal" class="level3">
+<h3 class="anchored" data-anchor-id="normal">Normal</h3>
+<div id="tbl-raw-summary-0" class="cell anchored">
+<div class="cell-output-display">
+<div>
+<table class="lightable-classic table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">vars</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">sd</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">median</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">trimmed</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mad</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">min</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">max</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">range</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">pregnancies</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3.30</td>
+<td style="text-align: right;">3.02</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">2.88</td>
+<td style="text-align: right;">2.97</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">13.00</td>
+<td style="text-align: right;">13.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">glucose</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">110.64</td>
+<td style="text-align: right;">24.78</td>
+<td style="text-align: right;">107.00</td>
+<td style="text-align: right;">109.09</td>
+<td style="text-align: right;">23.72</td>
+<td style="text-align: right;">44.00</td>
+<td style="text-align: right;">197.00</td>
+<td style="text-align: right;">153.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blood_pressure</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">70.88</td>
+<td style="text-align: right;">12.16</td>
+<td style="text-align: right;">70.00</td>
+<td style="text-align: right;">70.71</td>
+<td style="text-align: right;">11.86</td>
+<td style="text-align: right;">24.00</td>
+<td style="text-align: right;">122.00</td>
+<td style="text-align: right;">98.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">skin_thickness</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">27.24</td>
+<td style="text-align: right;">10.03</td>
+<td style="text-align: right;">27.00</td>
+<td style="text-align: right;">26.86</td>
+<td style="text-align: right;">10.38</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: right;">60.00</td>
+<td style="text-align: right;">53.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">insulin</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">130.29</td>
+<td style="text-align: right;">102.48</td>
+<td style="text-align: right;">102.50</td>
+<td style="text-align: right;">112.27</td>
+<td style="text-align: right;">63.01</td>
+<td style="text-align: right;">15.00</td>
+<td style="text-align: right;">744.00</td>
+<td style="text-align: right;">729.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">bmi</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">30.86</td>
+<td style="text-align: right;">6.56</td>
+<td style="text-align: right;">30.10</td>
+<td style="text-align: right;">30.55</td>
+<td style="text-align: right;">7.12</td>
+<td style="text-align: right;">18.20</td>
+<td style="text-align: right;">57.30</td>
+<td style="text-align: right;">39.10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">dbf</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.43</td>
+<td style="text-align: right;">0.30</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">0.22</td>
+<td style="text-align: right;">0.08</td>
+<td style="text-align: right;">2.33</td>
+<td style="text-align: right;">2.25</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">31.19</td>
+<td style="text-align: right;">11.67</td>
+<td style="text-align: right;">27.00</td>
+<td style="text-align: right;">28.98</td>
+<td style="text-align: right;">7.41</td>
+<td style="text-align: right;">21.00</td>
+<td style="text-align: right;">81.00</td>
+<td style="text-align: right;">60.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">outcome</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+</section>
+<section id="diabetic" class="level3">
+<h3 class="anchored" data-anchor-id="diabetic">Diabetic</h3>
+<div id="tbl-raw-summary-1" class="cell anchored">
+<div class="cell-output-display">
+<div>
+<table class="lightable-classic table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">vars</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">sd</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">median</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">trimmed</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mad</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">min</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">max</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">range</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">pregnancies</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4.87</td>
+<td style="text-align: right;">3.74</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">4.60</td>
+<td style="text-align: right;">4.45</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">17.00</td>
+<td style="text-align: right;">17.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">glucose</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">142.32</td>
+<td style="text-align: right;">29.60</td>
+<td style="text-align: right;">140.00</td>
+<td style="text-align: right;">142.04</td>
+<td style="text-align: right;">34.84</td>
+<td style="text-align: right;">78.00</td>
+<td style="text-align: right;">199.00</td>
+<td style="text-align: right;">121.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blood_pressure</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">75.32</td>
+<td style="text-align: right;">12.30</td>
+<td style="text-align: right;">74.50</td>
+<td style="text-align: right;">75.22</td>
+<td style="text-align: right;">11.12</td>
+<td style="text-align: right;">30.00</td>
+<td style="text-align: right;">114.00</td>
+<td style="text-align: right;">84.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">skin_thickness</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">33.00</td>
+<td style="text-align: right;">10.33</td>
+<td style="text-align: right;">32.00</td>
+<td style="text-align: right;">32.74</td>
+<td style="text-align: right;">8.90</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: right;">99.00</td>
+<td style="text-align: right;">92.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">insulin</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">206.85</td>
+<td style="text-align: right;">132.70</td>
+<td style="text-align: right;">169.50</td>
+<td style="text-align: right;">184.28</td>
+<td style="text-align: right;">74.87</td>
+<td style="text-align: right;">14.00</td>
+<td style="text-align: right;">846.00</td>
+<td style="text-align: right;">832.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">bmi</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">35.41</td>
+<td style="text-align: right;">6.61</td>
+<td style="text-align: right;">34.30</td>
+<td style="text-align: right;">34.91</td>
+<td style="text-align: right;">5.71</td>
+<td style="text-align: right;">22.90</td>
+<td style="text-align: right;">67.10</td>
+<td style="text-align: right;">44.20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">dbf</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.55</td>
+<td style="text-align: right;">0.37</td>
+<td style="text-align: right;">0.45</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.09</td>
+<td style="text-align: right;">2.42</td>
+<td style="text-align: right;">2.33</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">37.07</td>
+<td style="text-align: right;">10.97</td>
+<td style="text-align: right;">36.00</td>
+<td style="text-align: right;">36.28</td>
+<td style="text-align: right;">11.86</td>
+<td style="text-align: right;">21.00</td>
+<td style="text-align: right;">70.00</td>
+<td style="text-align: right;">49.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">outcome</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="outliers" class="level2">
+<h2 class="anchored" data-anchor-id="outliers">Outliers</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/plot_imputed_outliers-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="missing" class="level2">
+<h2 class="anchored" data-anchor-id="missing">Missing</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/plot_raw_missing-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="imputed-data" class="level1">
+<h1>Imputed Data</h1>
+<p>Any outliers beyond three standard deviations from the mean are set to NA. With the values that were improperly coded and the outliers set to NA, there were a total number of XXX NAs.</p>
+<section id="summary-1" class="level2">
+<h2 class="anchored" data-anchor-id="summary-1">Summary</h2>
+<section id="normal-1" class="level3">
+<h3 class="anchored" data-anchor-id="normal-1">Normal</h3>
+<div id="tbl-imputed-summary" class="cell anchored">
+<div class="cell-output-display">
+<div>
+<table class="lightable-classic table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">vars</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">sd</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">median</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">trimmed</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mad</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">min</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">max</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">range</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">pregnancies</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3.30</td>
+<td style="text-align: right;">3.02</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">2.88</td>
+<td style="text-align: right;">2.97</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">13.00</td>
+<td style="text-align: right;">13.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">glucose</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">110.58</td>
+<td style="text-align: right;">24.72</td>
+<td style="text-align: right;">107.00</td>
+<td style="text-align: right;">109.00</td>
+<td style="text-align: right;">23.72</td>
+<td style="text-align: right;">44.00</td>
+<td style="text-align: right;">197.00</td>
+<td style="text-align: right;">153.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blood_pressure</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">70.75</td>
+<td style="text-align: right;">11.42</td>
+<td style="text-align: right;">70.00</td>
+<td style="text-align: right;">70.58</td>
+<td style="text-align: right;">11.86</td>
+<td style="text-align: right;">38.00</td>
+<td style="text-align: right;">108.00</td>
+<td style="text-align: right;">70.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">skin_thickness</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">26.84</td>
+<td style="text-align: right;">9.91</td>
+<td style="text-align: right;">27.00</td>
+<td style="text-align: right;">26.38</td>
+<td style="text-align: right;">10.38</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: right;">60.00</td>
+<td style="text-align: right;">53.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">insulin</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">119.50</td>
+<td style="text-align: right;">78.85</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">107.70</td>
+<td style="text-align: right;">59.30</td>
+<td style="text-align: right;">15.00</td>
+<td style="text-align: right;">510.00</td>
+<td style="text-align: right;">495.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">bmi</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">30.84</td>
+<td style="text-align: right;">6.44</td>
+<td style="text-align: right;">30.30</td>
+<td style="text-align: right;">30.58</td>
+<td style="text-align: right;">7.12</td>
+<td style="text-align: right;">18.20</td>
+<td style="text-align: right;">52.30</td>
+<td style="text-align: right;">34.10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">dbf</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.41</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">0.08</td>
+<td style="text-align: right;">1.46</td>
+<td style="text-align: right;">1.38</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">30.91</td>
+<td style="text-align: right;">11.08</td>
+<td style="text-align: right;">27.00</td>
+<td style="text-align: right;">28.89</td>
+<td style="text-align: right;">7.41</td>
+<td style="text-align: right;">21.00</td>
+<td style="text-align: right;">68.00</td>
+<td style="text-align: right;">47.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">outcome*</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+</section>
+<section id="diabetic-1" class="level3">
+<h3 class="anchored" data-anchor-id="diabetic-1">Diabetic</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<table class="lightable-classic table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">vars</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mean</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">sd</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">median</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">trimmed</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mad</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">min</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">max</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">range</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">pregnancies</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4.73</td>
+<td style="text-align: right;">3.55</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">4.52</td>
+<td style="text-align: right;">4.45</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">13.00</td>
+<td style="text-align: right;">13.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">glucose</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">142.21</td>
+<td style="text-align: right;">29.60</td>
+<td style="text-align: right;">140.00</td>
+<td style="text-align: right;">141.92</td>
+<td style="text-align: right;">34.84</td>
+<td style="text-align: right;">78.00</td>
+<td style="text-align: right;">199.00</td>
+<td style="text-align: right;">121.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">blood_pressure</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">75.23</td>
+<td style="text-align: right;">11.79</td>
+<td style="text-align: right;">74.50</td>
+<td style="text-align: right;">75.23</td>
+<td style="text-align: right;">11.12</td>
+<td style="text-align: right;">40.00</td>
+<td style="text-align: right;">108.00</td>
+<td style="text-align: right;">68.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">skin_thickness</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">31.62</td>
+<td style="text-align: right;">8.86</td>
+<td style="text-align: right;">32.00</td>
+<td style="text-align: right;">31.76</td>
+<td style="text-align: right;">8.90</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: right;">56.00</td>
+<td style="text-align: right;">49.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">insulin</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">197.44</td>
+<td style="text-align: right;">112.11</td>
+<td style="text-align: right;">173.00</td>
+<td style="text-align: right;">183.91</td>
+<td style="text-align: right;">86.73</td>
+<td style="text-align: right;">14.00</td>
+<td style="text-align: right;">510.00</td>
+<td style="text-align: right;">496.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">bmi</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">35.12</td>
+<td style="text-align: right;">6.03</td>
+<td style="text-align: right;">34.20</td>
+<td style="text-align: right;">34.80</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">22.90</td>
+<td style="text-align: right;">53.20</td>
+<td style="text-align: right;">30.30</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">dbf</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.53</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">0.49</td>
+<td style="text-align: right;">0.30</td>
+<td style="text-align: right;">0.09</td>
+<td style="text-align: right;">1.39</td>
+<td style="text-align: right;">1.31</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">36.93</td>
+<td style="text-align: right;">10.78</td>
+<td style="text-align: right;">36.00</td>
+<td style="text-align: right;">36.19</td>
+<td style="text-align: right;">11.86</td>
+<td style="text-align: right;">21.00</td>
+<td style="text-align: right;">67.00</td>
+<td style="text-align: right;">46.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">outcome*</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="outliers-1" class="level2">
+<h2 class="anchored" data-anchor-id="outliers-1">Outliers</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/plot-imputed-outliers-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="correlogram" class="level2">
+<h2 class="anchored" data-anchor-id="correlogram">Correlogram</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/plot-imputed-corr-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="missing-1" class="level2">
+<h2 class="anchored" data-anchor-id="missing-1">Missing</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/plot-imputed-missing-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="models" class="level1">
+<h1>Models</h1>
+<section id="knn" class="level2">
+<h2 class="anchored" data-anchor-id="knn">KNN</h2>
+<p>The K-Nearest Neighbors (KNN) algorithm is a foundational and intuitive method in supervised machine learning, applicable to both classification and regression problems, with roots tracing back to non-parametric statistics work by Fix and Hodges in 1951 and formal analysis by Cover and Hart in 1967. Its core theory rests on the simple idea that similar data points exist in close proximity in the feature space. KNN is considered an instance-based, or “lazy,” learning algorithm because it doesn’t build an explicit model during training; instead, it memorizes the entire labeled training dataset. When predicting an outcome for a new, unseen data point, the algorithm identifies the ‘K’ closest data points (the “nearest neighbors”) from the training set based on a chosen distance metric, typically Euclidean distance. For classification, the prediction is the most frequent class label among these K neighbors (majority vote), while for regression, the prediction is usually the average or median of the neighbors’ values. The performance of KNN hinges critically on the choice of ‘K’ (balancing bias and variance), the selection of an appropriate distance metric, and often requires feature scaling, as distance calculations are sensitive to the range and units of the input variables.</p>
+</section>
+<section id="logistic-regression" class="level2">
+<h2 class="anchored" data-anchor-id="logistic-regression">Logistic Regression</h2>
+<p>Logistic regression is a fundamental statistical method and supervised learning algorithm primarily used for binary classification problems, aiming to predict the probability of an observation belonging to one of two outcomes (e.g., yes/no, pass/fail). Developed significantly by statistician David Cox in the mid-20th century, it’s widely applied across various fields. Unlike linear regression, it models the probability (p) of the default class (typically ‘1’) using the logistic function (also known as the sigmoid function):</p>
+<p><span class="math display">\[
+p = \frac{1}{1 + \exp(-z)}
+\]</span></p>
+<p>This S-shaped function takes an input z, which is a linear combination of the predictor variables , and transforms it into a probability value between 0 and 1. The linear combination input (z) actually represents the log-odds (or logit) of the event occurring. This means logistic regression models the log-odds as a linear function of the predictors:</p>
+<p><span class="math display">\[
+\log\left(\frac{p}{1-p}\right) = z = \beta_0 + \beta_1x_1 + \dots + \beta_nx_n
+\]</span></p>
+<p>As a parametric model, logistic regression learns the coefficients <span class="math display">\[(β i)\]</span> from the training data, typically through an iterative optimization process called Maximum Likelihood Estimation (MLE). The final output probability (p) is then usually converted into a class prediction by applying a threshold (commonly 0.5).</p>
+</section>
+</section>
+<section id="results" class="level1">
+<h1>Results</h1>
+<section id="receiver-operator-curve" class="level2">
+<h2 class="anchored" data-anchor-id="receiver-operator-curve">Receiver Operator Curve</h2>
+<p>The Receiver Operating Characteristic (ROC) curve is a fundamental tool in machine learning and statistics for evaluating the performance of binary classification models. Originating from signal detection theory developed during World War II to analyze radar signals, the ROC curve graphically illustrates a classifier’s diagnostic ability across all possible classification thresholds. It plots the True Positive Rate (TPR), also known as sensitivity or recall (the proportion of actual positives correctly identified), on the Y-axis against the False Positive Rate (FPR), which is equal to 1 minus specificity (the proportion of actual negatives incorrectly identified as positive), on the X-axis. Each point on the curve corresponds to a specific threshold used to convert the model’s continuous output (like a probability score) into a binary decision (0 or 1); varying this threshold traces the curve. A model with better discriminative power will have a curve that bows towards the top-left corner (representing 100% TPR and 0% FPR), while a model performing no better than random chance lies along the diagonal line (TPR = FPR). The overall performance across all thresholds is commonly summarized by the Area Under the Curve (AUC or AUROC), a value ranging from 0.5 (random chance) to 1.0 (perfect classification), representing the probability that the model ranks a randomly chosen positive instance higher than a randomly chosen negative one.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="scores" class="level2">
+<h2 class="anchored" data-anchor-id="scores">Scores</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<table class="lightable-classic table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">model</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.metric</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">.estimator</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">.estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">lr</td>
+<td style="text-align: left;">roc_auc</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8405556</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">knn</td>
+<td style="text-align: left;">roc_auc</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.8370370</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">lr</td>
+<td style="text-align: left;">brier_class</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.1539240</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">knn</td>
+<td style="text-align: left;">brier_class</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.1524704</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">knn</td>
+<td style="text-align: left;">accuracy</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7727273</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">lr</td>
+<td style="text-align: left;">accuracy</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7402597</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+<p><em>Report generated at 2025-05-07 16:15:32.167308</em></p>
+</section>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-nust_rockerverse_2020" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">D. Nüst, D. Eddelbuettel, D. Bennett, R. Cannoodt, D. Clark, G. Daróczi, M. Edmondson, C. Fay, E. Hughes, L. Kjeldgaard, S. Lopp, B. Marwick, H. Nolis, J. Nolis, H. Ooi, K. Ram, N. Ross, L. Shepherd, P. Sólymos, T. L. Swetnam, N. Turaga, C. V. Petegem, J. Williams, C. Willis, and N. Xiao, <span>“The <span>Rockerverse</span>: <span>Packages</span> and <span>Applications</span> for <span>Containerisation</span> with <span>R</span>,”</span> <em>The R Journal</em>, vol. 12, no. 1, pp. 437–461, Sep. 2020 [Online]. Available: <a href="https://rjournal.github.io/">https://rjournal.github.io/</a>. [Accessed: 29-Apr-2025]</div>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
