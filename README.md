@@ -71,7 +71,7 @@ graph TD
         L --> M[7. Script: Run `docker compose up --build`];
     end
 
-    subgraph Docker Container (via Docker Compose)
+    subgraph Docker Container via Docker Compose  // Removed parentheses here
         M --> N[8. Container: Start & Run `/entrypoint.sh`];
         N --> O[9. Entrypoint: Run `targets::tar_make()`];
         O -- Creates --> P{_targets data store};
@@ -81,7 +81,7 @@ graph TD
         R --> S[11. Entrypoint: Move files to `/app/_targets/user/results`];
     end
 
-    subgraph GitHub Actions Runner (Post-Container)
+    subgraph GitHub Actions Runner Post-Container // Removed parentheses here
         S --> T{12. Volume Mount Mirrors Output to `./docs` on Runner};
         T --> U[13. Action: Deploy `./docs` to gh-pages branch];
     end
