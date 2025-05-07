@@ -3,6 +3,7 @@
 .Rhistory
 .RData
 .Renviron
+.Rbuildignore
 _targets/
 renv/library/
 renv/staging/
