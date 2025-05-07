@@ -73,7 +73,7 @@ graph TD
 
     subgraph Docker Container via Docker Compose  // Removed parentheses here
         M --> N[8. Container: Start & Run `/entrypoint.sh`];
-        N --> O[9. Entrypoint: Run `targets::tar_make()`];
+        N --> O["9. Entrypoint: Run targets::tar_make()"];
         O -- Creates --> P{_targets data store};
         O --> Q[10. Entrypoint: Run `quarto render index.qmd`];
         P -- tar_load() --> Q;
