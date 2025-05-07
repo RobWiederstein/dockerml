@@ -5,6 +5,10 @@ on:
     branches:
       - main
       - master
+  pull_request: # Good to run on PRs as well
+    branches:
+      - main
+      - master
 
 jobs:
   build-run-and-deploy:
@@ -17,48 +21,37 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Build the base image with GHA caching
-      - name: Build base Docker image
+      # Only ONE build step now for the combined Dockerfile
+      - name: Build Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: . # Assuming Dockerfile.base is in the root
-          file: ./Dockerfile.base
-          # Build for amd64, as your base image internals are set up for this
-          platforms: linux/amd64
-          push: false # Do not push base image, just build and load for next step
-          tags: robwiederstein/r-ml-base:4.4.0
-          # Cache configuration using GitHub Actions cache
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      # Build the pipeline image with GHA caching, using the base image just built
-      - name: Build pipeline Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: . # Assuming Dockerfile is in the root
-          file: ./Dockerfile
-          # Build for amd64, as your compose file specifies this
-          platforms: linux/amd64
-          push: false # Do not push pipeline image, just build for 'docker compose up'
-          tags: dockerml-project:latest # Tag matches your compose.yaml
-          # Cache configuration using GitHub Actions cache
+          context: .
+          file: ./Dockerfile  # Your single, combined Dockerfile
+          platforms: linux/amd64 # As your compose.yaml specifies this
+          push: false # We're not pushing to a registry, just using it in this job
+          tags: dockerml-project:latest # This is the image your compose.yaml will use
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Make run_pipeline.sh executable
         run: chmod +x ./run_pipeline.sh
 
-      - name: Run the full pipeline (using pre-built images)
-        # Modify run_pipeline.sh to NOT use --build in CI, or it will ignore the cached images from above.
-        # For now, let's assume run_pipeline.sh still contains 'docker compose up --build',
-        # which will re-check layers, but should be fast if base image is identical.
-        # Ideally, run_pipeline.sh would just be 'docker compose up' in CI.
+      - name: Run the full pipeline
+        # Your run_pipeline.sh calls 'docker compose up --build'.
+        # The '--build' flag inside it will be very fast here because
+        # the 'dockerml-project:latest' image was just built and loaded
+        # by the previous GitHub Actions step.
         run: ./run_pipeline.sh
 
-      # Optional deployment step remains the same
       - name: Deploy report to GitHub Pages
-        if: success() # Only deploy if pipeline ran successfully
+        # Run only on successful pushes to main or master
+        if: success() && (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'))
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
+          # Optional:
+          # cname: your.custom.domain.com
+          # user_name: 'github-actions[bot]'
+          # user_email: 'github-actions[bot]@users.noreply.github.com'
+          # commit_message: 'Deploy report to GitHub Pages'

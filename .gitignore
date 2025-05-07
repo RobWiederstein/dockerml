@@ -24,4 +24,5 @@ index.html
 .Rproj.user
 .Rdata
 .httr-oauth
+*.tar
 .quarto
