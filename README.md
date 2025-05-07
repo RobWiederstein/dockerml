@@ -1,6 +1,7 @@
-|------|
-|<img src="https://github.com/RobWiederstein/dockerml/blob/master/images/targets.jpg" alt="Workflow Visualization" width="100%">|
-| A targets flowchart rendered via targets::tar_visnetwork() |
+<figure>
+  <img src="https://raw.githubusercontent.com/RobWiederstein/dockerml/master/images/targets.jpg" alt="Workflow Visualization" width="100%" style="max-width: 100%;">
+  <figcaption>A targets flowchart rendered via targets::tar_visnetwork()</figcaption>
+</figure>
 
 # dockerml
 
