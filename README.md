@@ -77,7 +77,7 @@ graph TD
         O -- Creates --> P{_targets data store};
         O --> Q[10. Entrypoint: Run `quarto render index.qmd`];
         P -- tar_load() --> Q;
-        Q -- Creates --> R[/app/index.html & /app/index_files];
+        Q -- Creates --> R["/app/index.html & /app/index_files"];
         R --> S[11. Entrypoint: Move files to `/app/_targets/user/results`];
     end
 
