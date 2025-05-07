@@ -168,7 +168,7 @@ flowchart TD
 ```
 # Local Host Files
 
-Much of a project can be excluded from version control via the `.gitignore` file.  To give a reader greater context, the directory tree's first level is included below.
+Much of a project can be excluded from version control via the `.gitignore` file.  To give a reader greater context, the directory tree's first level  as seen on the local host -- my mac -- is included below.
 
 <img src="./images/dockerml_tree.jpg" alt="Local Host Files" width="100%">
 
@@ -193,6 +193,6 @@ Some people and at least one company deserve special mention:
 
 - Joel Nitta, a researcher of ferns and educator on reproducibility.  His GitHub profile can be found [here](https://github.com/joelnitta).
 
-- `renv`
+- [`renv` package](https://rstudio.github.io/renv/articles/renv.html)
 
-- `Rocker` project.
+-  [The Rocker Project: Docker Containers for the R Environment](https://rocker-project.org/)
