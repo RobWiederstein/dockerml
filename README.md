@@ -49,63 +49,124 @@ The typical development and execution flow for this project follows these steps:
 # Workflow Diagram
 
 ```mermaid
-graph TD
-    subgraph Local Machine
-        A[1. Edit Code Locally] --> B(2. Save Files);
-        B --> C{3. Git Commit & Push};
-    end
+flowchart TD
+ subgraph subGraph0[" "]
+        A["Edit Code Locally"]
+        B("Save Files")
+        C{"Git Commit <br>&amp; Push"}
+  end
+ subgraph subGraph1["GitHub"]
+        D{"Push Triggers <br> GitHub Action"}
+  end
+ subgraph subGraph2["GitHub Actions Runner"]
+        E["Action: Checkout Code"]
+        F["Action: Build Docker Image"]
+        G["System Libs Install"]
+        H["Quarto CLI Install"]
+        I["renv Pkg Install"]
+        J["Copy Project Files"]
+        K{"Build Complete <br> Image Ready"}
+        L["Action: Run Pipeline Script ./run_pipeline.sh"]
+        M["Script: Run docker <br> compose up --build"]
+  end
+ subgraph subGraph3["Docker Container via Docker Compose"]
+        N["Container: Start & Run /entrypoint.sh"]
+        O["Entrypoint: Run targets::tar_make()"]
+        P{"_targets data store"}
+        Q@{ label: "Entrypoint: Run `quarto render index.qmd`" }
+        R["/app/index.html & /app/index_files"]
+        S@{ label: "Entrypoint: Move files to `/app/_targets/user/results`" }
+  end
+ subgraph subGraph4["GitHub Actions Runner Post-Container // Removed parentheses here"]
+        T@{ label: "Volume Mount Mirrors Output to `./docs` on Runner" }
+        U@{ label: "Action: Deploy `./docs` to gh-pages branch" }
+  end
+ subgraph subGraph5["GitHub Pages"]
+        V("GitHub Pages Site Updates")
+        W(["View Published Report"])
+  end
 
-    subgraph GitHub & Actions Trigger
-        C --> D{4. Push Triggers GitHub Action};
-    end
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F -- Includes --> G & H & I & J
+    I --> K
+    K --> L
+    L --> M
+    M --> N
+    N --> O
+    O -- Creates --> P
+    O --> Q
+    P -- tar_load() --> Q
+    Q -- Creates --> R
+    R --> S
+    S --> T
+    T --> U
+    U --> V
+    V --> W
 
-    subgraph GitHub Actions Runner
-        D --> E[5. Action: Checkout Code];
-        E --> F[Action: Build Docker Image];
-        F -- Includes --> G[System Libs Install];
-        F -- Includes --> H[Quarto CLI Install];
-        F -- Includes --> I[renv Pkg Install];
-        F -- Includes --> J[Copy Project Files];
-        I --> K{Build Complete: Image Ready};
-        K --> L[6. Action: Run Pipeline Script `./run_pipeline.sh`];
-        L --> M[7. Script: Run `docker compose up --build`];
-    end
-
-    subgraph Docker Container via Docker Compose  // Removed parentheses here
-        M --> N[8. Container: Start & Run `/entrypoint.sh`];
-        N --> O["9. Entrypoint: Run targets::tar_make()"];
-        O -- Creates --> P{_targets data store};
-        O --> Q[10. Entrypoint: Run `quarto render index.qmd`];
-        P -- tar_load() --> Q;
-        Q -- Creates --> R["/app/index.html & /app/index_files"];
-        R --> S[11. Entrypoint: Move files to `/app/_targets/user/results`];
-    end
-
-    subgraph GitHub Actions Runner Post-Container // Removed parentheses here
-        S --> T{12. Volume Mount Mirrors Output to `./docs` on Runner};
-        T --> U[13. Action: Deploy `./docs` to gh-pages branch];
-    end
-
-    subgraph GitHub Pages
-        U --> V(14. GitHub Pages Site Updates);
-        V --> W([View Published Report]);
-    end
-
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style C fill:#f9f,stroke:#333,stroke-width:2px
-    style D fill:#ccf,stroke:#333,stroke-width:2px
-    style E fill:#ccf,stroke:#333,stroke-width:2px
-    style F fill:#ccf,stroke:#333,stroke-width:2px
-    style L fill:#ccf,stroke:#333,stroke-width:2px
-    style M fill:#ccf,stroke:#333,stroke-width:2px
-    style N fill:#cfc,stroke:#333,stroke-width:2px
-    style O fill:#cfc,stroke:#333,stroke-width:2px
-    style Q fill:#cfc,stroke:#333,stroke-width:2px
-    style S fill:#cfc,stroke:#333,stroke-width:2px
-    style T fill:#ccf,stroke:#333,stroke-width:2px
-    style U fill:#ccf,stroke:#333,stroke-width:2px
-    style V fill:#fcf,stroke:#333,stroke-width:2px
-    style W fill:#fcf,stroke:#333,stroke-width:2px
+    L@{ shape: rect}
+    M@{ shape: rect}
+    N@{ shape: rect}
+    Q@{ shape: rect}
+    S@{ shape: rect}
+    T@{ shape: diamond}
+    U@{ shape: rect}
+     A:::Aqua
+     B:::Aqua
+     C:::Aqua
+     D:::Aqua
+     E:::Aqua
+     F:::Aqua
+     G:::Aqua
+     H:::Aqua
+     I:::Aqua
+     J:::Aqua
+     K:::Aqua
+     L:::Aqua
+     M:::Aqua
+     N:::Aqua
+     O:::Aqua
+     P:::Aqua
+     Q:::Aqua
+     R:::Aqua
+     S:::Aqua
+     T:::Aqua
+     U:::Aqua
+     V:::Aqua
+     W:::Aqua
+    classDef Aqua stroke-width:1px, stroke-dasharray:none, stroke:#46EDC8, fill:#DEFFF8, color:#378E7A
+    style A color:#000000
+    style B color:#000000
+    style C color:#000000
+    style D color:#000000
+    style E color:#000000
+    style F color:#000000
+    style G color:#000000
+    style H color:#000000
+    style I color:#000000
+    style J color:#000000
+    style K color:#000000
+    style L color:#000000
+    style M color:#000000
+    style N color:#000000
+    style O color:#000000
+    style P color:#000000
+    style Q color:#000000
+    style R color:#000000
+    style S color:#000000
+    style T color:#000000
+    style U color:#000000
+    style V color:#000000
+    style W color:#000000
+    style subGraph0 stroke:#757575
+    style subGraph1 stroke:#757575
+    style subGraph2 stroke:#757575
+    style subGraph5 stroke:#757575
+    style subGraph4 stroke:#757575
+    style subGraph3 stroke:#757575
 ```
 
 # Challenges
