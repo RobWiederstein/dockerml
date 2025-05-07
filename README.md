@@ -1,4 +1,4 @@
-<img src="images/target.jpg" alt="Workflow Visualization" width="100%">
+<img src="https://github.com/RobWiederstein/dockerml/blob/master/images/targets.jpg" alt="Workflow Visualization" width="100%">
 
 # dockerml
 
