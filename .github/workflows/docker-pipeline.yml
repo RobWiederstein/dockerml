@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check R code style
-        uses: r-lib/actions/style-project@v2
+        uses: r-lib/actions/style-project
         with:
           style_rules: 'tidyverse_style'
           fail_on_change: false
