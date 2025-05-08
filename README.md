@@ -4,14 +4,15 @@
 | A targets flowchart rendered via targets::tar_visnetwork() |
 
 - [dockerml](#dockerml)
-  - [Installation \& Reproduction](#installation--reproduction)
-    - [Prerequisites](#prerequisites)
-    - [Setup Steps](#setup-steps)
-    - [Reproducing the Analysis and Paper](#reproducing-the-analysis-and-paper)
-    - [Stopping the Container (if needed)](#stopping-the-container-if-needed)
-  - [Workflow Description](#workflow-description)
-  - [Workflow Diagram](#workflow-diagram)
-  - [Local Host Files](#local-host-files)
+- [Installation \& Reproduction](#installation--reproduction)
+  - [Prerequisites](#prerequisites)
+  - [Setup Steps](#setup-steps)
+  - [Reproducing the Analysis and Paper](#reproducing-the-analysis-and-paper)
+  - [Stopping the Container (if needed)](#stopping-the-container-if-needed)
+- [Workflow](#workflow)
+  - [Description](#description)
+  - [Diagram](#diagram)
+- [Local Host Files](#local-host-files)
 - [Challenges](#challenges)
 - [Acknowledgements](#acknowledgements)
 
@@ -22,11 +23,11 @@ The goal of the `dockerml` project is to serve as a demonstration of modern repr
 
 To achieve peak reproducibility, several oft-cited tools are integrated: `git` underpins version control. The R environment itself, including all package dependencies and their exact versions, is managed by `renv`. The `targets` and its related package `tarchetypes` then builds the programming pipeline. The packages, R, and the environment is wrapped into a Docker container, providing a shareable, consistent runtime environment that executes identically across different machines. For workflow automation, a GitHub Actions workflow (defined in a YAML file within the .github/workflows directory of the repository) was created. Finally, for publishing, the scientific publishing platform quarto, is used to create a webpage via pandoc. This webpage displays plots and tables and also  incorporates a  citation strategy, managed by Zotero.
 
-## Installation & Reproduction
+# Installation & Reproduction
 
 These instructions will guide you through setting up the project environment and reproducing the analysis and the research paper (webpage output).
 
-### Prerequisites
+## Prerequisites
 
 Before you begin, ensure you have the following software installed on your system:
 
@@ -34,7 +35,7 @@ Before you begin, ensure you have the following software installed on your syste
 2.  **Conda (Miniconda or Anaconda):** For managing host-level dependencies like specific Docker versions if needed, and providing a consistent environment for running Docker commands. (Download Miniconda from [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html) or Anaconda from [https://www.anaconda.com/products/distribution](https://www.anaconda.com/products/distribution))
 3.  **Docker Desktop (or Docker Engine with the Docker Compose CLI plugin):** For building and running the containerized analysis environment. Docker Desktop must be running. (Download Docker Desktop from [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop))
 
-### Setup Steps
+## Setup Steps
 
 1.  **Clone the Repository.** Open your terminal or command prompt and clone this repository to your local machine:
     
@@ -51,7 +52,7 @@ conda activate dockerml-env
 ```
     *(Note: The `environment.yml` should specify dependencies like `docker` and `docker-compose`. The environment name `dockerml-env` is an example; it will be the name defined within your `environment.yml` file, or you can specify a name during creation with `conda env create -f environment.yml -n myenvname`.)*
 
-### Reproducing the Analysis and Paper
+## Reproducing the Analysis and Paper
 
 Once the prerequisites are met and the setup is complete, you can reproduce the entire workflow with a single command:
 
@@ -74,7 +75,7 @@ Example directory structure after successful run:
 ├── ... (other project files and directories)
 ```
 
-### Stopping the Container (if needed)
+## Stopping the Container (if needed)
 
 If the `docker compose up` command remains attached to your terminal (i.e., you see continuous log output), you can typically stop it and the running containers by pressing `Ctrl+C` in that terminal.
 
@@ -84,7 +85,9 @@ To ensure the container and any associated networks are fully stopped and remove
 docker compose down
 ```
 
-## Workflow Description
+# Workflow 
+
+## Description
 
 The typical development and execution flow for this project follows these steps:
 
@@ -121,7 +124,7 @@ The typical development and execution flow for this project follows these steps:
 
 14. **GitHub Pages Update:** GitHub automatically detects the update to the `gh-pages` branch and serves the new `index.html` and associated files at the project's GitHub Pages URL (e.g., `https://robwiederstein.github.io/dockerml/`).
 
-## Workflow Diagram
+## Diagram
 
 ```mermaid
 flowchart TD
@@ -242,7 +245,7 @@ flowchart TD
     style subGraph3 stroke:#757575
 ```
 
-## Local Host Files
+# Local Host Files
 
 Much of a project can be excluded from version control via the `.gitignore` file.  To give a reader greater context, the directory tree's first level  as seen on the local host -- my mac -- is included below.
 
