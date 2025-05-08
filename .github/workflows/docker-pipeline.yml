@@ -18,6 +18,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Check R code style
+        uses: r-lib/actions/style-project@v2
+        with:
+          style_rules: 'tidyverse_style'
+          fail_on_change: false
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
