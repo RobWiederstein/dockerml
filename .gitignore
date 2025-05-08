@@ -17,6 +17,8 @@ docs/
 # generated from local host
 index_files/
 index.html
+/*.html
+README_files/
 
 # swap
 .gitignore.swp

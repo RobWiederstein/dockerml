@@ -3,13 +3,88 @@
 | <img src="https://github.com/RobWiederstein/dockerml/blob/master/images/targets.jpg" alt="Workflow Visualization" width="100%"> |
 | A targets flowchart rendered via targets::tar_visnetwork() |
 
+- [dockerml](#dockerml)
+  - [Installation \& Reproduction](#installation--reproduction)
+    - [Prerequisites](#prerequisites)
+    - [Setup Steps](#setup-steps)
+    - [Reproducing the Analysis and Paper](#reproducing-the-analysis-and-paper)
+    - [Stopping the Container (if needed)](#stopping-the-container-if-needed)
+  - [Workflow Description](#workflow-description)
+  - [Workflow Diagram](#workflow-diagram)
+  - [Local Host Files](#local-host-files)
+- [Challenges](#challenges)
+- [Acknowledgements](#acknowledgements)
+
+
 # dockerml
 
 The goal of the `dockerml` project is to serve as a demonstration of modern reproducible research principles, applied to a classic machine learning problem using the Pima Indians Diabetes dataset from Kaggle. It aims to (1) clearly showcase each component of a reproducible workflow, (2) fully automate this workflow from code changes through published results, and (3) publish these results as a well-documented webpage using a tidymodels approach for the analysis. 
 
 To achieve peak reproducibility, several oft-cited tools are integrated: `git` underpins version control. The R environment itself, including all package dependencies and their exact versions, is managed by `renv`. The `targets` and its related package `tarchetypes` then builds the programming pipeline. The packages, R, and the environment is wrapped into a Docker container, providing a shareable, consistent runtime environment that executes identically across different machines. For workflow automation, a GitHub Actions workflow (defined in a YAML file within the .github/workflows directory of the repository) was created. Finally, for publishing, the scientific publishing platform quarto, is used to create a webpage via pandoc. This webpage displays plots and tables and also  incorporates a  citation strategy, managed by Zotero.
 
-# Workflow Description
+## Installation & Reproduction
+
+These instructions will guide you through setting up the project environment and reproducing the analysis and the research paper (webpage output).
+
+### Prerequisites
+
+Before you begin, ensure you have the following software installed on your system:
+
+1.  **Git:** For cloning the repository. (You can download it from [https://git-scm.com/](https://git-scm.com/))
+2.  **Conda (Miniconda or Anaconda):** For managing host-level dependencies like specific Docker versions if needed, and providing a consistent environment for running Docker commands. (Download Miniconda from [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html) or Anaconda from [https://www.anaconda.com/products/distribution](https://www.anaconda.com/products/distribution))
+3.  **Docker Desktop (or Docker Engine with the Docker Compose CLI plugin):** For building and running the containerized analysis environment. Docker Desktop must be running. (Download Docker Desktop from [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop))
+
+### Setup Steps
+
+1.  **Clone the Repository.** Open your terminal or command prompt and clone this repository to your local machine:
+    
+```bash
+git clone https://github.com/RobWiederstein/dockerml.git
+cd dockerml
+```
+
+2.  **Set up the Conda Environment.** This project uses a Conda environment to ensure that the Docker commands are run with compatible tool versions. Create and activate the Conda environment using the `environment.yml` file provided in the repository:
+
+```bash
+conda env create -f environment.yml
+conda activate dockerml-env
+```
+    *(Note: The `environment.yml` should specify dependencies like `docker` and `docker-compose`. The environment name `dockerml-env` is an example; it will be the name defined within your `environment.yml` file, or you can specify a name during creation with `conda env create -f environment.yml -n myenvname`.)*
+
+### Reproducing the Analysis and Paper
+
+Once the prerequisites are met and the setup is complete, you can reproduce the entire workflow with a single command:
+
+1.  **Run the Docker Compose Workflow:**
+    From the root directory of the cloned project (e.g., `~/dockerml`), execute the following command:
+
+```bash
+docker compose up --build
+```
+This command will build the Docker image, run the analysis pipeline and renders the Quarto document. After the `targets` pipeline completes, the Quarto document (`index.qmd`) will be rendered into an HTML webpage. After the `docker compose up` command finishes successfully, the generated research paper (HTML webpage) and associated files will be available in the `docs/` directory. You can open the main report file, typically `docs/index.html` (or `output/index.html`), in your web browser to view the results.
+
+Example directory structure after successful run:
+
+```
+<repository-name>/
+├── docs/
+│   ├── index.html  <-- This is your reproduced paper
+│   └── index_files/
+│       └── ... (supporting files like images, CSS, JS)
+├── ... (other project files and directories)
+```
+
+### Stopping the Container (if needed)
+
+If the `docker compose up` command remains attached to your terminal (i.e., you see continuous log output), you can typically stop it and the running containers by pressing `Ctrl+C` in that terminal.
+
+To ensure the container and any associated networks are fully stopped and removed after you are done (or if `Ctrl+C` doesn't clean everything up), navigate to the project directory in a new terminal and run:
+
+```bash
+docker compose down
+```
+
+## Workflow Description
 
 The typical development and execution flow for this project follows these steps:
 
@@ -46,7 +121,7 @@ The typical development and execution flow for this project follows these steps:
 
 14. **GitHub Pages Update:** GitHub automatically detects the update to the `gh-pages` branch and serves the new `index.html` and associated files at the project's GitHub Pages URL (e.g., `https://robwiederstein.github.io/dockerml/`).
 
-# Workflow Diagram
+## Workflow Diagram
 
 ```mermaid
 flowchart TD
@@ -166,7 +241,8 @@ flowchart TD
     style subGraph4 stroke:#757575
     style subGraph3 stroke:#757575
 ```
-# Local Host Files
+
+## Local Host Files
 
 Much of a project can be excluded from version control via the `.gitignore` file.  To give a reader greater context, the directory tree's first level  as seen on the local host -- my mac -- is included below.
 
@@ -187,9 +263,9 @@ Much of a project can be excluded from version control via the `.gitignore` file
 
 # Acknowledgements
 
-Many thanks to the following people and projects that made this possible:
+Many thanks to the following people, companies, and projects that made this possible:
 
-- Will Landau, author of the `targets` package.  His Github profile is [here](https://github.com/wlandau/). Eli Lilly Inc. deserves some recognition as well.
+- Will Landau, author of the `targets` package.  His Github profile is [here](https://github.com/wlandau/). Eli Lilly Inc. deserves recognition as well.
 
 - Joel Nitta, a researcher of ferns and educator on reproducibility.  His GitHub profile can be found [here](https://github.com/joelnitta).
 
