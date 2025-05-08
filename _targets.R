@@ -116,80 +116,28 @@ tar_plan(
     )
   ),
   tbl_cm_log_reg = conf_mat(results_log_reg[[5]][[1]], truth = outcome, estimate = .pred_class),
-  tbl_results_log_reg = resultsresults_log_reg[[3]][[1]],
+  tbl_results_log_reg = results_log_reg[[3]][[1]],
   # end logistic regression ----
   # knn begin ----
-  # recipe
   tar_target(
-    name = knn_recipe,
-    command = recipe(formula = outcome ~ ., data = pima_train) |>
-      step_scale()
+    name = tuned_knn,
+    command = build_knn(
+      train = pima_train,
+      folds = pima_folds,
+      engine = "kknn"
+    )
   ),
-  # model
   tar_target(
-    name = knn_mod,
-    command = nearest_neighbor(
-      mode = "classification",
-      neighbors = tune(),
-      weight_func = tune(),
-      dist_power = tune()
-    ) %>%
-      set_engine("kknn")
+    name = results_knn,
+    command = model_knn(
+      workflow = tuned_knn$knn_wflow,
+      last_model = tuned_knn$knn_model,
+      test = pima_split
+    )
   ),
-  # workflow
-  tar_target(
-    name = knn_workflow,
-    command = workflow() %>%
-      add_recipe(knn_recipe) %>%
-      add_model(knn_mod)
-  ),
-  # extract_parameter_set_dials(knn_mod)
-  # tune
-  tar_target(
-    name = knn_res,
-    command = {
-      set.seed(345)
-      knn_workflow %>%
-        tune_grid(pima_folds,
-          grid = 25,
-          control = control_grid(save_pred = TRUE),
-          metrics = metric_set(accuracy, roc_auc)
-        )
-    }
-  ),
-  # select best
-  # knn_best <-
-  #     knn_res %>%
-  #     select_best(metric = "roc_auc")
-  # knn_best
-  # last model
-  tar_target(
-    name = knn_last_mod,
-    command = nearest_neighbor(
-      mode = "classification",
-      neighbors = 13, # 5
-      weight_func = "gaussian", # "triangular"
-      dist_power = 1.08 # 5
-    ) %>%
-      set_engine("kknn")
-  ),
-  # Finalize
-  tar_target(
-    name = knn_last_workflow,
-    command = knn_workflow |> update_model(knn_last_mod)
-  ),
-  # Last Fit on train & applies to test!!!
-  tar_target(
-    name = knn_last_fit,
-    command = knn_last_workflow |> last_fit(pima_split)
-  ),
-  # confusion matrix
-  tar_target(knn_metrics, knn_last_fit[[5]][[1]]),
-  tar_target(
-    name = knn_conf_mat,
-    command = conf_mat(knn_metrics, truth = outcome, estimate = .pred_class)
-  ),
-  tar_target(name = knn_final_fit_pred, command = knn_last_fit[[3]][[1]]),
+  tbl_cm_knn = conf_mat(results_knn[[5]][[1]], truth = outcome, estimate = .pred_class),
+  tbl_results_knn = results_knn[[3]][[1]],
+  
   # knn end ----
   # resamples begin ----
   tar_target(

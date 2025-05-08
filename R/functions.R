@@ -163,3 +163,55 @@ model_log_reg <- function(workflow, last_model, test) {
     lr_last_workflow %>%
     last_fit(test)
 }
+build_knn <- function(train, folds, engine, ...) {
+  ## knn ----
+  knn_recipe <-
+    recipe(formula = outcome ~ ., data = train) |>
+    step_scale()
+  # model
+  knn_mod <-
+    nearest_neighbor(
+      mode = "classification",
+      neighbors = tune(), #5
+      weight_func = tune(), # "triangular"
+      dist_power = tune() # 5
+    ) %>%
+    set_engine(engine)
+  # workflow
+  knn_workflow <-
+    workflow() %>%
+    add_recipe(knn_recipe) %>%
+    add_model(knn_mod)
+  # tune
+  knn_res <-
+    knn_workflow %>%
+    tune_grid(folds,
+              grid = 25,
+              control = control_grid(save_pred = TRUE),
+              metrics = metric_set(accuracy, roc_auc))
+  # select best parameters
+  knn_best <- select_best(knn_res, metric = "roc_auc")
+  # last fit
+  knn_last_mod <-
+    nearest_neighbor(
+      mode = "classification",
+      neighbors = knn_best[["neighbors"]][[1]], #5
+      weight_func = "gaussian", # "triangular"
+      dist_power = knn_best[["dist_power"]][[1]]
+    ) %>%
+    set_engine(engine)
+  list(knn_wflow = knn_workflow,
+       knn_model = knn_last_mod,
+       knn_res = knn_res
+  )
+}
+model_knn <- function(workflow, last_model, test){
+  # update workflow
+  knn_last_workflow <-
+    workflow |>
+    update_model(last_model)
+  # last fit
+  knn_last_fit <-
+    knn_last_workflow |>
+    last_fit(test)
+}
