@@ -111,3 +111,55 @@ plot_correlation_by_vars <- function(data, mapping, ...) {
     # Add other ggpairs arguments (diag, upper, columns, etc.) as needed
   )
 }
+build_log_reg <- function(train, folds, engine, ...) {
+  # recipe ----
+  lr_recipe <-
+    recipe(formula = outcome ~ ., data = train) |>
+    step_zv(all_predictors()) |>
+    step_normalize()
+  # model ----
+  lr_mod <-
+    logistic_reg(
+      penalty = tune(),
+      mixture = 1) %>%
+    set_engine(engine)
+  # workflow ----
+  lr_workflow <-
+    workflow() %>%
+    add_recipe(lr_recipe) %>%
+    add_model(lr_mod)
+  # create grid ----
+  lr_reg_grid <- tibble(penalty = 10^seq(-4, -1, length.out = 30))
+  # fit ----
+  lr_res <-
+    lr_workflow |>
+    tune_grid(
+      folds,
+      lr_reg_grid,
+      control = control_grid(save_pred = T),
+      metrics = metric_set(accuracy, roc_auc)
+    )
+  # select best params ----
+  lr_best <- select_best(lr_res, metric = "roc_auc")
+  #last lr_fit ----
+  lr_last_mod <-
+    logistic_reg(
+      penalty = lr_best[[1, 1]],
+      mixture = 1) %>%
+    set_engine(engine)
+  list(
+    log_reg_wflow = lr_workflow,
+    log_reg_model = lr_last_mod
+  )
+
+}
+model_log_reg <- function(workflow, last_model, test) {
+  # last workflow
+  lr_last_workflow <-
+    workflow %>%
+    update_model(last_model)
+  # last fit
+  lr_last_fit <-
+    lr_last_workflow %>%
+    last_fit(test)
+}

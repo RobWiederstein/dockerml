@@ -4,7 +4,7 @@ source("./R/functions.R")
 source("./R/helpers.R")
 
 # Set target options:
-tar_option_set(format = "qs", error = "continue")
+tar_option_set(format = "qs", error = "continue", seed = 1)
 
 # set file structure
 create_user_folders(c("data", "interim", "results"))
@@ -98,62 +98,26 @@ tar_plan(
   pima_train = training(pima_split),
   pima_test = testing(pima_split),
   pima_folds = vfold_cv(pima_train, strata = "outcome"),
-  # logistic regression
+  # begin logistic regression ----
   tar_target(
-    name = lr_recipe,
-    command = recipe(formula = outcome ~ ., data = pima_train) |>
-      step_zv(all_predictors()) |>
-      step_normalize()
+    name = tuned_log_reg,
+    command = build_log_reg(
+      train = pima_train,
+      folds = pima_folds,
+      engine = "glmnet"
+    )
   ),
   tar_target(
-    name = lr_model,
-    command = logistic_reg(
-      penalty = tune(),
-      mixture = 1
-    ) %>%
-      set_engine("glmnet")
+    name = results_log_reg,
+    command = model_log_reg(
+      workflow = tuned_log_reg$log_reg_wflow,
+      last_model = tuned_log_reg$log_reg_model,
+      test = pima_split
+    )
   ),
-  tar_target(
-    name = lr_workflow,
-    command = workflow() %>%
-      add_recipe(lr_recipe) %>%
-      add_model(lr_model)
-  ),
-  lr_reg_grid = tibble(penalty = 10^seq(-4, -1, length.out = 30)),
-  tar_target(
-    name = lr_res,
-    command = lr_workflow |>
-      tune_grid(
-        pima_folds,
-        lr_reg_grid,
-        control = control_grid(save_pred = T),
-        metrics = metric_set(accuracy, roc_auc)
-      )
-  ),
-  lr_best = lr_res |> select_best(metric = "roc_auc"),
-  tar_target(
-    name = lr_auc,
-    command = lr_res %>%
-      collect_predictions(parameters = lr_best) %>%
-      roc_curve(outcome, .pred_nondiabetic) %>%
-      mutate(model = "Logistic Regression")
-  ),
-  # last lr_fit
-  tar_target(
-    name = lr_last_mod,
-    command = logistic_reg(penalty = lr_best[[1, 1]], mixture = 1) %>%
-      set_engine("glmnet")
-  ),
-  # lr last workflow
-  lr_last_workflow = lr_workflow %>% update_model(lr_last_mod),
-  lr_last_fit = {
-    set.seed(345)
-    lr_last_workflow %>% last_fit(pima_split)
-  },
-  lr_conf_mat = conf_mat(lr_last_fit[[5]][[1]], truth = outcome, estimate = .pred_class),
-  lr_res_acc = lr_last_fit[[5]][[1]] |> rename(truth = outcome, predicted = .pred_class),
-  lr_accuracy = accuracy(lr_res_acc, truth, predicted),
-  lr_last_fit_pred = lr_last_fit[[3]][[1]],
+  tbl_cm_log_reg = conf_mat(results_log_reg[[5]][[1]], truth = outcome, estimate = .pred_class),
+  tbl_results_log_reg = resultsresults_log_reg[[3]][[1]],
+  # end logistic regression ----
   # knn begin ----
   # recipe
   tar_target(
