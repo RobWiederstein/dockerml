@@ -1,11 +1,11 @@
-build_file_info_table <- function(data, rownames = "attributes", round = 2){
+build_file_info_table <- function(data, rownames = "attributes", round = 2) {
   file.info(data) %>%
     t() %>%
     tibble::as_tibble(rownames = rownames) %>%
     dplyr::rename(value = round)
 }
 create_user_folders <- function(dir_name) {
-  something <- function(dir_name){
+  something <- function(dir_name) {
     target_dir <- here::here("_targets", "user", dir_name)
     if (!fs::dir_exists(target_dir)) {
       fs::dir_create(target_dir)
@@ -42,11 +42,11 @@ convert_outliers_to_na <- function(data, sd_threshold = 3, na_rm = TRUE) {
       }
     }))
 }
-switch_0_to_NA <- function(data){
+switch_0_to_NA <- function(data) {
   cols_to_impute <- c("glucose", "blood_pressure", "skin_thickness", "insulin", "bmi")
   data %>% mutate(across(all_of(cols_to_impute), ~ ifelse(.x == 0, NA_real_, .x)))
 }
-plot_scaled_outliers_3_sd_or_more <- function(data){
+plot_scaled_outliers_3_sd_or_more <- function(data) {
   data %>%
     mutate(outcome = factor(
       outcome,
@@ -69,7 +69,8 @@ plot_scaled_outliers_3_sd_or_more <- function(data){
     geom_boxplot() +
     geom_point(
       data = filter(df, is_outlier == TRUE),
-      aes(colour = "red"), alpha = 1) +
+      aes(colour = "red"), alpha = 1
+    ) +
     scale_y_continuous(limits = c(-4, 4)) +
     facet_grid(. ~ outcome) +
     labs(
@@ -80,7 +81,7 @@ plot_scaled_outliers_3_sd_or_more <- function(data){
     theme_minimal() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 }
-read_in_csv_file <- function(data, ...){
+read_in_csv_file <- function(data, ...) {
   vroom(
     data,
     show_col_types = FALSE,
@@ -88,7 +89,7 @@ read_in_csv_file <- function(data, ...){
   ) %>%
     dplyr::rename(dbf = diabetes_pedigree_function)
 }
-plot_correlation_by_vars <- function(data, mapping, ...){
+plot_correlation_by_vars <- function(data, mapping, ...) {
   my_ggpairs_scatter_smooth <- function(data, mapping, ...) {
     ggplot(data = data, mapping = mapping) +
       # Add points (adjust alpha/size for overplotting)
@@ -110,4 +111,3 @@ plot_correlation_by_vars <- function(data, mapping, ...){
     # Add other ggpairs arguments (diag, upper, columns, etc.) as needed
   )
 }
-

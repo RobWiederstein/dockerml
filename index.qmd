@@ -24,24 +24,23 @@ library("ggplot2")
 library("visNetwork")
 library("kableExtra")
 targets::tar_load(c(
-    downloaded_file_info,
-    tbl_raw_summary_0,
-    tbl_raw_summary_1,
-    tbl_imputed_summary_0,
-    tbl_imputed_summary_1,
-    plot_raw_missing,
-    plot_raw_outliers,
-    plot_imputed_outliers,
-    plot_imputed_corr,
-    plot_imputed_missing,
-    plot_roc_curve,
-    tbl_test_set_results
-
+  downloaded_file_info,
+  tbl_raw_summary_0,
+  tbl_raw_summary_1,
+  tbl_imputed_summary_0,
+  tbl_imputed_summary_1,
+  plot_raw_missing,
+  plot_raw_outliers,
+  plot_imputed_outliers,
+  plot_imputed_corr,
+  plot_imputed_missing,
+  plot_roc_curve,
+  tbl_test_set_results
 ))
 # functions
-format_table <- function(data, ...){
-  kbl(data) %>% 
-  kable_classic()
+format_table <- function(data, ...) {
+  kbl(data) %>%
+    kable_classic()
 }
 ```
 
@@ -63,15 +62,18 @@ The workflow proceeds according to the chart below.
 #| label: workflow-image
 
 # Capture standard output and messages into the 'junk' variable
-junk <- capture.output({
-  # Run the function, assigning the resulting widget to a variable
-  vis_widget <- targets::tar_visnetwork(
-    targets_only = TRUE,
-    zoom_speed = .5,
-    reporter = "silent" # Keep silencing targets messages
-  )
-# Specify which output types to capture
-}, type = c("output", "message"))
+junk <- capture.output(
+  {
+    # Run the function, assigning the resulting widget to a variable
+    vis_widget <- targets::tar_visnetwork(
+      targets_only = TRUE,
+      zoom_speed = .5,
+      reporter = "silent" # Keep silencing targets messages
+    )
+    # Specify which output types to capture
+  },
+  type = c("output", "message")
+)
 
 # Now, explicitly display the widget object. R/RStudio will handle
 # showing it in the Viewer pane or inline.
