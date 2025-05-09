@@ -116,6 +116,7 @@ tar_plan(
     )
   ),
   tbl_cm_log_reg = conf_mat(results_log_reg$lr_last_fit[[5]][[1]], truth = outcome, estimate = .pred_class),
+  plot_cm_log_reg = plot_conf_mat(tbl_cm_log_reg),
   tbl_results_log_reg = results_log_reg$lr_last_fit[[3]][[1]],
   # end logistic regression ----
   # knn begin ----
@@ -136,6 +137,7 @@ tar_plan(
     )
   ),
   tbl_cm_knn = conf_mat(results_knn$knn_last_fit[[5]][[1]], truth = outcome, estimate = .pred_class),
+  plot_cm_knn = plot_conf_mat(tbl_cm_knn),
   tbl_results_knn = results_knn$knn_last_fit[[3]][[1]],
   
   # knn end ----

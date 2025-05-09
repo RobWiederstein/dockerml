@@ -220,3 +220,33 @@ model_knn <- function(workflow, last_model, test){
   list(knn_last_workflow = knn_last_workflow,
        knn_last_fit = knn_last_fit)
 }
+plot_conf_mat <- function(conf_mat) {
+  # extract and calculate pct for heat map
+  conf_df <- conf_mat[["table"]] %>%
+    as_tibble() %>%
+    mutate(total = sum(n)) %>%
+    mutate(pct = n / total)
+  names(conf_df)
+  names(conf_df)[1] <- "Predicted"
+  names(conf_df)[2] <- "Actual"
+  # reorder factors to mirror common conf matrix
+  conf_df$Predicted <- factor(conf_df$Predicted, levels = c("nondiabetic", "diabetic"))
+  conf_df$Actual <- factor(conf_df$Actual, levels = c("diabetic", "nondiabetic"))
+  # create the heatmap with ggplot2
+  ggplot(conf_df, aes(x = Predicted, y = Actual, fill = pct)) +
+    geom_tile(color = "white") +
+    geom_label(aes(label = n), vjust = 0.5, hjust = 0.5, size = 8, fill = "white") +
+    scale_fill_distiller(palette = "YlOrRd", type = "seq", direction = 1) + 
+    theme_minimal() +
+    scale_x_discrete(position = "top") +
+    theme(
+      axis.text.x = element_text(hjust = 0.5, vjust = 0, size = 12),
+      axis.text.x.top = element_text(vjust = -3),
+      axis.text.y = element_text(size = 12),
+      axis.title = element_text(size = 20),
+      legend.position = "none",
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      aspect.ratio = 1
+    )
+}

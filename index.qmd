@@ -38,6 +38,8 @@ targets::tar_load(c(
   plot_imputed_corr,
   plot_imputed_missing,
   plot_roc_curve,
+  plot_cm_knn,
+  plot_cm_log_reg
   
 ))
 
@@ -213,15 +215,14 @@ format_table(tbl_test_set_results)
 ### KNN
 
 ```{r}
-tbl_cm_knn
+plot_cm_knn
 ```
 
 ### Logistic Regression
 
 ```{r}
-tbl_cm_log_reg
+plot_cm_log_reg
 ```
-
 
 
 # Conclusion
