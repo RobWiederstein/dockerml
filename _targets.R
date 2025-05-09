@@ -115,8 +115,8 @@ tar_plan(
       test = pima_split
     )
   ),
-  tbl_cm_log_reg = conf_mat(results_log_reg[[5]][[1]], truth = outcome, estimate = .pred_class),
-  tbl_results_log_reg = results_log_reg[[3]][[1]],
+  tbl_cm_log_reg = conf_mat(results_log_reg$lr_last_fit[[5]][[1]], truth = outcome, estimate = .pred_class),
+  tbl_results_log_reg = results_log_reg$lr_last_fit[[3]][[1]],
   # end logistic regression ----
   # knn begin ----
   tar_target(
@@ -135,20 +135,20 @@ tar_plan(
       test = pima_split
     )
   ),
-  tbl_cm_knn = conf_mat(results_knn[[5]][[1]], truth = outcome, estimate = .pred_class),
-  tbl_results_knn = results_knn[[3]][[1]],
+  tbl_cm_knn = conf_mat(results_knn$knn_last_fit[[5]][[1]], truth = outcome, estimate = .pred_class),
+  tbl_results_knn = results_knn$knn_last_fit[[3]][[1]],
   
   # knn end ----
   # resamples begin ----
   tar_target(
     name = model_resamples,
-    command = list(knn = knn_res, lr = lr_res)
+    command = list(knn = tuned_knn$knn_res, lr = tuned_log_reg$log_reg_res)
   ),
   # resamples end ----
   # test results begin ----
   tar_target(
     name = test_set_results,
-    command = list(knn = knn_last_fit, lr = lr_last_fit)
+    command = list(knn = results_knn$knn_last_fit, lr = results_log_reg$lr_last_fit)
   ),
   # test results end ----
   lr_best_auc = select_best(model_resamples$lr, metric = "roc_auc"),
@@ -195,3 +195,4 @@ tar_plan(
     }
   )
 )
+

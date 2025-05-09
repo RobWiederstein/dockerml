@@ -29,14 +29,18 @@ targets::tar_load(c(
   tbl_raw_summary_1,
   tbl_imputed_summary_0,
   tbl_imputed_summary_1,
+  tbl_test_set_results,
+  tbl_cm_knn,
+  tbl_cm_log_reg,
   plot_raw_missing,
   plot_raw_outliers,
   plot_imputed_outliers,
   plot_imputed_corr,
   plot_imputed_missing,
   plot_roc_curve,
-  tbl_test_set_results
+  
 ))
+
 # functions
 format_table <- function(data, ...) {
   kbl(data) %>%
@@ -203,6 +207,22 @@ plot_roc_curve
 ```{r}
 format_table(tbl_test_set_results)
 ```
+
+## Confusion matrix
+
+### KNN
+
+```{r}
+tbl_cm_knn
+```
+
+### Logistic Regression
+
+```{r}
+tbl_cm_log_reg
+```
+
+
 
 # Conclusion
 

@@ -149,7 +149,8 @@ build_log_reg <- function(train, folds, engine, ...) {
     set_engine(engine)
   list(
     log_reg_wflow = lr_workflow,
-    log_reg_model = lr_last_mod
+    log_reg_model = lr_last_mod,
+    log_reg_res = lr_res
   )
 
 }
@@ -162,6 +163,8 @@ model_log_reg <- function(workflow, last_model, test) {
   lr_last_fit <-
     lr_last_workflow %>%
     last_fit(test)
+  list(lr_last_workflow = lr_last_workflow,
+       lr_last_fit = lr_last_fit)
 }
 build_knn <- function(train, folds, engine, ...) {
   ## knn ----
@@ -214,4 +217,6 @@ model_knn <- function(workflow, last_model, test){
   knn_last_fit <-
     knn_last_workflow |>
     last_fit(test)
+  list(knn_last_workflow = knn_last_workflow,
+       knn_last_fit = knn_last_fit)
 }
