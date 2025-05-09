@@ -14,6 +14,7 @@ suppressPackageStartupMessages({
   library("naniar", quietly = TRUE)
   library("psych", quietly = TRUE)
   library("purrr", quietly = TRUE)
+  library("RColorBrewer", quietly = TRUE)
   library("qs2", quietly = TRUE)
   library("quarto", quietly = TRUE)
   library("targets", quietly = TRUE)
