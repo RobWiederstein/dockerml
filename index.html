@@ -129,6 +129,7 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#receiver-operator-curve" id="toc-receiver-operator-curve" class="nav-link" data-scroll-target="#receiver-operator-curve">Receiver Operator Curve</a></li>
   <li><a href="#scores" id="toc-scores" class="nav-link" data-scroll-target="#scores">Scores</a></li>
+  <li><a href="#confusion-matrix" id="toc-confusion-matrix" class="nav-link" data-scroll-target="#confusion-matrix">Confusion matrix</a></li>
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
@@ -168,8 +169,8 @@ window.Quarto = {
 <p>The workflow proceeds according to the chart below.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="visNetwork html-widget html-fill-item" id="htmlwidget-b9dcf4c11668c5a88f99" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-b9dcf4c11668c5a88f99">{"x":{"nodes":{"name":["downloaded_file_info","knn_best_auc","knn_conf_mat","knn_final_fit_pred","knn_last_fit","knn_last_mod","knn_last_workflow","knn_metrics","knn_mod","knn_recipe","knn_res","knn_workflow","lr_accuracy","lr_auc","lr_best","lr_best_auc","lr_conf_mat","lr_last_fit","lr_last_fit_pred","lr_last_mod","lr_last_workflow","lr_model","lr_recipe","lr_reg_grid","lr_res","lr_res_acc","lr_workflow","model_resamples","models","pima_data","pima_data_url","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_raw_missing","plot_raw_outliers","plot_roc_curve","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_raw_summary_0","tbl_raw_summary_1","tbl_test_set_results","test_set_results"],"type":["stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem"],"description":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"status":["uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.09,0.02,0.003,0,0.24,0.001,0.001,0,0.001,0.005,31.698,0.001,0.002,0.075,0.024,0.019,0.002,0.157,0.001,0.001,0.001,0.011,0.013,0.003,1.991,0.001,0.005,0,0.046,0.224,0.001,0.008,0.132,0.073,0.033,0.005,0.019,0.001,0.001,0.037,0.039,0.022,0.125,0.07000000000000001,0.01,0.012,0.011,0.018,0.01,0.007,0],"bytes":[304,258,230,298,133727,412,11215,2885,409,10684,181295,11241,222,7200,218,218,226,131817,301,519,12268,388,11698,438,1287885,3265,12168,1470375,11746,23105,0,14605,12782,12528,12845,12762,14475,3249,10112,96793,1040183,1122961,992906,1125247,1198032,633,624,636,635,332,247170],"branches":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"label":["downloaded_file_info","knn_best_auc","knn_conf_mat","knn_final_fit_pred","knn_last_fit","knn_last_mod","knn_last_workflow","knn_metrics","knn_mod","knn_recipe","knn_res","knn_workflow","lr_accuracy","lr_auc","lr_best","lr_best_auc","lr_conf_mat","lr_last_fit","lr_last_fit_pred","lr_last_mod","lr_last_workflow","lr_model","lr_recipe","lr_reg_grid","lr_res","lr_res_acc","lr_workflow","model_resamples","models","pima_data","pima_data_url","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_raw_missing","plot_raw_outliers","plot_roc_curve","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_raw_summary_0","tbl_raw_summary_1","tbl_test_set_results","test_set_results"],"color":["#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823"],"id":["downloaded_file_info","knn_best_auc","knn_conf_mat","knn_final_fit_pred","knn_last_fit","knn_last_mod","knn_last_workflow","knn_metrics","knn_mod","knn_recipe","knn_res","knn_workflow","lr_accuracy","lr_auc","lr_best","lr_best_auc","lr_conf_mat","lr_last_fit","lr_last_fit_pred","lr_last_mod","lr_last_workflow","lr_model","lr_recipe","lr_reg_grid","lr_res","lr_res_acc","lr_workflow","model_resamples","models","pima_data","pima_data_url","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_raw_missing","plot_raw_outliers","plot_roc_curve","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_raw_summary_0","tbl_raw_summary_1","tbl_test_set_results","test_set_results"],"level":[3,13,14,13,12,1,11,13,1,9,11,10,17,13,12,13,16,15,16,13,14,1,9,1,11,16,10,12,14,2,1,9,6,3,4,5,7,8,8,7,7,7,5,5,15,7,7,5,5,17,16],"shape":["dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot"]},"edges":{"from":["pima_data","model_resamples","knn_metrics","knn_last_fit","pima_split","knn_last_workflow","knn_last_mod","knn_workflow","knn_last_fit","pima_train","knn_workflow","pima_folds","knn_mod","knn_recipe","lr_res_acc","lr_best","lr_res","lr_res","model_resamples","lr_last_fit","lr_last_workflow","pima_split","lr_last_fit","lr_best","lr_last_mod","lr_workflow","pima_train","pima_folds","lr_reg_grid","lr_workflow","lr_last_fit","lr_model","lr_recipe","knn_res","lr_res","knn_best_auc","lr_best_auc","model_resamples","pima_data_url","pima_train","pima_raw_ol_to_na","pima_data","pima_raw","pima_raw_converted","pima_imputed","pima_split","pima_split","pima_imputed","pima_imputed","pima_imputed","pima_raw_converted","pima_raw_converted","models","pima_imputed","pima_imputed","pima_raw_converted","pima_raw_converted","test_set_results","lr_last_fit","knn_last_fit"],"to":["downloaded_file_info","knn_best_auc","knn_conf_mat","knn_final_fit_pred","knn_last_fit","knn_last_fit","knn_last_workflow","knn_last_workflow","knn_metrics","knn_recipe","knn_res","knn_res","knn_workflow","knn_workflow","lr_accuracy","lr_auc","lr_auc","lr_best","lr_best_auc","lr_conf_mat","lr_last_fit","lr_last_fit","lr_last_fit_pred","lr_last_mod","lr_last_workflow","lr_last_workflow","lr_recipe","lr_res","lr_res","lr_res","lr_res_acc","lr_workflow","lr_workflow","model_resamples","model_resamples","models","models","models","pima_data","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_raw_missing","plot_raw_outliers","plot_roc_curve","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_raw_summary_0","tbl_raw_summary_1","tbl_test_set_results","test_set_results","test_set_results"],"color":["#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823"],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":0.5},"layout":{"hierarchical":{"enabled":true,"levelSeparation":150,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem"],"color":["#354823","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+<div class="visNetwork html-widget html-fill-item" id="htmlwidget-4b864320b20c1856ac39" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-4b864320b20c1856ac39">{"x":{"nodes":{"name":["downloaded_file_info","knn_best_auc","lr_best_auc","model_resamples","models","pima_data","pima_data_url","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_raw_missing","plot_raw_outliers","plot_roc_curve","results_knn","results_log_reg","tbl_cm_knn","tbl_cm_log_reg","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_raw_summary_0","tbl_raw_summary_1","tbl_results_knn","tbl_results_log_reg","tbl_test_set_results","test_set_results","tuned_knn","tuned_log_reg"],"type":["stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem"],"description":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"status":["uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.421,0.02,0.018,0.001,0.051,0.379,0.001,0.008,0.134,0.06900000000000001,0.027,0.005,0.011,0.002,0.001,0.037,0.037,0.02,0.146,0.06,0.01,0.274,0.157,0.003,0.002,0.012,0.019,0.017,0.01,0,0.001,0.007,0,33.118,1.754],"bytes":[305,258,219,1541345,11840,23105,0,14534,12782,12528,12845,12762,14476,3206,10031,96761,993591,1035129,945432,1036941,2459708,332450,1433129,227,227,633,624,636,635,299,301,336,1739245,365028,1374220],"branches":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"label":["downloaded_file_info","knn_best_auc","lr_best_auc","model_resamples","models","pima_data","pima_data_url","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_raw_missing","plot_raw_outliers","plot_roc_curve","results_knn","results_log_reg","tbl_cm_knn","tbl_cm_log_reg","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_raw_summary_0","tbl_raw_summary_1","tbl_results_knn","tbl_results_log_reg","tbl_test_set_results","test_set_results","tuned_knn","tuned_log_reg"],"color":["#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823"],"id":["downloaded_file_info","knn_best_auc","lr_best_auc","model_resamples","models","pima_data","pima_data_url","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_raw_missing","plot_raw_outliers","plot_roc_curve","results_knn","results_log_reg","tbl_cm_knn","tbl_cm_log_reg","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_raw_summary_0","tbl_raw_summary_1","tbl_results_knn","tbl_results_log_reg","tbl_test_set_results","test_set_results","tuned_knn","tuned_log_reg"],"level":[3,12,12,11,13,2,1,9,6,3,4,5,7,8,8,7,7,7,5,5,14,11,11,12,12,7,7,5,5,12,12,13,12,10,10],"shape":["dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot"]},"edges":{"from":["pima_data","model_resamples","model_resamples","tuned_knn","tuned_log_reg","knn_best_auc","lr_best_auc","model_resamples","pima_data_url","pima_train","pima_raw_ol_to_na","pima_data","pima_raw","pima_raw_converted","pima_imputed","pima_split","pima_split","pima_imputed","pima_imputed","pima_imputed","pima_raw_converted","pima_raw_converted","models","pima_split","tuned_knn","pima_split","tuned_log_reg","results_knn","results_log_reg","pima_imputed","pima_imputed","pima_raw_converted","pima_raw_converted","results_knn","results_log_reg","test_set_results","results_knn","results_log_reg","pima_folds","pima_train","pima_folds","pima_train"],"to":["downloaded_file_info","knn_best_auc","lr_best_auc","model_resamples","model_resamples","models","models","models","pima_data","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_raw_missing","plot_raw_outliers","plot_roc_curve","results_knn","results_knn","results_log_reg","results_log_reg","tbl_cm_knn","tbl_cm_log_reg","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_raw_summary_0","tbl_raw_summary_1","tbl_results_knn","tbl_results_log_reg","tbl_test_set_results","test_set_results","test_set_results","tuned_knn","tuned_knn","tuned_log_reg","tuned_log_reg"],"color":["#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823"],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":0.5},"layout":{"hierarchical":{"enabled":true,"levelSeparation":150,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem"],"color":["#354823","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
@@ -202,15 +203,15 @@ window.Quarto = {
 </tr>
 <tr class="even">
 <td style="text-align: left;">mtime</td>
-<td style="text-align: left;">2025-05-08 11:23:00</td>
+<td style="text-align: left;">2025-05-09 01:15:08</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">ctime</td>
-<td style="text-align: left;">2025-05-08 11:23:00</td>
+<td style="text-align: left;">2025-05-09 01:15:08</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">atime</td>
-<td style="text-align: left;">2025-05-08 11:23:00</td>
+<td style="text-align: left;">2025-05-09 01:15:08</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">uid</td>
@@ -912,37 +913,37 @@ p = \frac{1}{1 + \exp(-z)}
 <td style="text-align: left;">lr</td>
 <td style="text-align: left;">roc_auc</td>
 <td style="text-align: left;">binary</td>
-<td style="text-align: right;">0.8405556</td>
+<td style="text-align: right;">0.8420370</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">knn</td>
 <td style="text-align: left;">roc_auc</td>
 <td style="text-align: left;">binary</td>
-<td style="text-align: right;">0.8370370</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">lr</td>
-<td style="text-align: left;">brier_class</td>
-<td style="text-align: left;">binary</td>
-<td style="text-align: right;">0.1539240</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">knn</td>
-<td style="text-align: left;">brier_class</td>
-<td style="text-align: left;">binary</td>
-<td style="text-align: right;">0.1524704</td>
+<td style="text-align: right;">0.7785185</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">knn</td>
-<td style="text-align: left;">accuracy</td>
+<td style="text-align: left;">brier_class</td>
 <td style="text-align: left;">binary</td>
-<td style="text-align: right;">0.7727273</td>
+<td style="text-align: right;">0.1816225</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">lr</td>
+<td style="text-align: left;">brier_class</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.1517258</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">lr</td>
 <td style="text-align: left;">accuracy</td>
 <td style="text-align: left;">binary</td>
-<td style="text-align: right;">0.7402597</td>
+<td style="text-align: right;">0.7662338</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">knn</td>
+<td style="text-align: left;">accuracy</td>
+<td style="text-align: left;">binary</td>
+<td style="text-align: right;">0.7142857</td>
 </tr>
 </tbody>
 </table>
@@ -952,10 +953,35 @@ p = \frac{1}{1 + \exp(-z)}
 </div>
 </div>
 </section>
+<section id="confusion-matrix" class="level2">
+<h2 class="anchored" data-anchor-id="confusion-matrix">Confusion matrix</h2>
+<section id="knn-1" class="level3">
+<h3 class="anchored" data-anchor-id="knn-1">KNN</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>             Truth
+Prediction    nondiabetic diabetic
+  nondiabetic          84       28
+  diabetic             16       26</code></pre>
+</div>
+</div>
+</section>
+<section id="logistic-regression-1" class="level3">
+<h3 class="anchored" data-anchor-id="logistic-regression-1">Logistic Regression</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>             Truth
+Prediction    nondiabetic diabetic
+  nondiabetic          86       22
+  diabetic             14       32</code></pre>
+</div>
+</div>
+</section>
+</section>
 </section>
 <section id="conclusion" class="level1">
 <h1>Conclusion</h1>
-<p><em>Report generated at 2025-05-08 11:24:00.400899</em></p>
+<p><em>Report generated at 2025-05-09 01:16:11.567601</em></p>
 </section>
 <section id="references" class="level1">
 <h1>References</h1>
