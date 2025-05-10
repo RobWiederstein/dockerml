@@ -59,7 +59,7 @@ COPY R R/
 COPY _targets.R .
 COPY index.qmd .
 COPY resources resources/
-COPY _extensions .
+COPY _extensions _extensions/
 COPY entrypoint.sh /entrypoint.sh
 
 # Make entrypoint executable

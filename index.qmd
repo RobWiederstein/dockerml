@@ -15,7 +15,7 @@ number-depth: 2
 toc: true
 toc-depth: 2
 bibliography: 
-  articles: ./resources/bibs/project.bib
+  articles: ./resources/bibs/docker.bib
   packages: ./resources/bibs/packages.bib
 csl: ./resources/bibs/ieee.csl
 nocite: "@*"
