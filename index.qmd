@@ -2,7 +2,12 @@
 title: "Pima Indians"
 format:
   html:
-    theme: united
+    theme: 
+      - united
+      - resources/css/theme.scss
+    mainfont: "Atkinson Hyperlegible"
+    linestretch: 1.5
+    fontsize: 1.2em
 execute:
   echo: false
   warning: false
@@ -62,7 +67,7 @@ format_table <- function(data, ...) {
 
 # Introduction
 
-This project involves reproducible research with Docker [@nust_rockerverse_2020]. The Pima Indians Diabetes Dataset is a well-known collection of health information frequently used by students and professionals learning data science and machine learning; you'll often find it used in examples on websites like Kaggle. 
+This project involves reproducible 0 research with Docker [@nust_rockerverse_2020]. The Pima Indians Diabetes Dataset is a well-known collection of health information frequently used by students and professionals learning data science and machine learning; you'll often find it used in examples on websites like Kaggle. 
 
 It originally came from a major health study conducted by the National Institute of Diabetes and Digestive and Kidney Diseases (NIDDK). The data focuses specifically on women, aged 21 and older, who are of Pima heritage and lived near Phoenix, Arizona. The main goal when using this dataset is typically to predict whether a person has diabetes (a 'yes' or 'no' outcome) based on several common medical measurements recorded for each individual. 
 
