@@ -53,8 +53,8 @@ jobs:
             ${{ runner.os }}-styler-
             ${{ runner.os }}-
 
-      - name: Style
-        run: styler::style_pkg()
+      - name: Style (Remove Comments)
+        run: styler::style_pkg(style = styler.nocomments::nocomments_style)
         shell: Rscript {0}
 
       - name: Commit and push changes
