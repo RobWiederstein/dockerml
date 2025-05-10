@@ -20,7 +20,7 @@ bibliography:
 csl: ./resources/bibs/ieee.csl
 nocite: "@*"
 filters:
-  - multibib
+  - _extensions/pandoc-ext/multibib/multibib.lua
 validate-yaml: false
 citeproc: false
 ---
