@@ -1,4 +1,5 @@
 suppressPackageStartupMessages({
+  library("bibtex", quietly = TRUE)
   library("corrgram", quietly = TRUE)
   library("curl", quietly = TRUE)
   library("dplyr", quietly = TRUE)

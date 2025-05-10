@@ -10,10 +10,19 @@ execute:
   error: true
   eval: true
   cache: FALSE
+number-sections: true
+number-depth: 2
 toc: true
 toc-depth: 2
-bibliography: resources/project.bib
-csl: resources/ieee.csl
+bibliography: 
+  articles: ./resources/bibs/project.bib
+  packages: ./resources/bibs/packages.bib
+csl: ./resources/bibs/ieee.csl
+nocite: "@*"
+filters:
+  - multibib
+validate-yaml: false
+citeproc: false
 ---
 
 ```{r setup, include=FALSE, eval=TRUE}
@@ -24,6 +33,7 @@ library("ggplot2")
 library("visNetwork")
 library("kableExtra")
 targets::tar_load(c(
+  pima_raw,
   downloaded_file_info,
   tbl_raw_summary_0,
   tbl_raw_summary_1,
@@ -52,7 +62,7 @@ format_table <- function(data, ...) {
 
 # Introduction
 
-This project involves reproducible research with Docker.[@nust_rockerverse_2020] The Pima Indians Diabetes Dataset is a well-known collection of health information frequently used by students and professionals learning data science and machine learning; you'll often find it used in examples on websites like Kaggle. 
+This project involves reproducible research with Docker [@nust_rockerverse_2020]. The Pima Indians Diabetes Dataset is a well-known collection of health information frequently used by students and professionals learning data science and machine learning; you'll often find it used in examples on websites like Kaggle. 
 
 It originally came from a major health study conducted by the National Institute of Diabetes and Digestive and Kidney Diseases (NIDDK). The data focuses specifically on women, aged 21 and older, who are of Pima heritage and lived near Phoenix, Arizona. The main goal when using this dataset is typically to predict whether a person has diabetes (a 'yes' or 'no' outcome) based on several common medical measurements recorded for each individual. 
 
@@ -225,11 +235,25 @@ plot_cm_log_reg
 ```
 
 
+
 # Conclusion
 
 _Report generated at `r Sys.time()`_
 
-# References
+# Appendix - Raw Data {.unnumbered}
 
-::: {#refs}
+```{r}
+format_table(head(pima_raw, 10))
+```
+
+
+
+# References {.unnumbered}
+
+::: {#refs-articles}
+:::
+
+# Packages {.unnumbered}
+
+::: {#refs-packages}
 :::

@@ -2,6 +2,7 @@
 source("./R/packages.R")
 source("./R/functions.R")
 source("./R/helpers.R")
+source("./R/write_bib.R")
 
 # Set target options:
 tar_option_set(format = "qs", error = "continue", seed = 1)

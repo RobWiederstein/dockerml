@@ -2,8 +2,6 @@
 ARG R_VERSION=4.4.0
 FROM rocker/r-base:${R_VERSION}
 
-# --- Steps from original Dockerfile.base ---
-
 # Install essential system dependencies
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
     build-essential \
@@ -61,6 +59,7 @@ COPY R R/
 COPY _targets.R .
 COPY index.qmd .
 COPY resources resources/
+COPY _extensions .
 COPY entrypoint.sh /entrypoint.sh
 
 # Make entrypoint executable
