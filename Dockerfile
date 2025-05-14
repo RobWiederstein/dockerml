@@ -1,6 +1,12 @@
 # Combined Dockerfile
 ARG R_VERSION=4.4.0
-FROM rocker/r-base:${R_VERSION}
+FROM rocker/r-ver:${R_VERSION} 
+
+LABEL org.opencontainers.image.authors="Rob Wiederstein khuon68@gmail.com" \
+      org.opencontainers.image.source="https://github.com/RobWiederstein/dockerml" \
+      org.opencontainers.image.title="dockerml Project Environment" \
+      org.opencontainers.image.description="Docker image for running the Pima Indians Diabetes ML reproducibility project, including all R dependencies and Quarto for rendering." \
+      org.opencontainers.image.version="1.0.0"
 
 # Install essential system dependencies
 RUN apt-get update -y && apt-get install -y --no-install-recommends \
