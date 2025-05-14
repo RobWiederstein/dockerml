@@ -37,7 +37,7 @@ library("tarchetypes")
 library("ggplot2")
 library("visNetwork")
 library("kableExtra")
-#library("cowplot")
+library("qs")
 targets::tar_load_everything()
 # functions
 format_table <- function(data, ...) {
