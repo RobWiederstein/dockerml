@@ -301,7 +301,7 @@ plot_model_roc_curve <- function(data){
   data %>% 
     collect_predictions() %>% 
     mutate(wflow_id_config = paste(wflow_id, .config, sep = "_"), .before = preproc) %>% 
-    filter(wflow_id_config %in% best_model_folds) -> best_model_predictions
+    filter(wflow_id_config %in% all_of(best_model_folds)) -> best_model_predictions
   
   # plot
   best_model_predictions  %>%
