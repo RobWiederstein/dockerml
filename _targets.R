@@ -60,7 +60,7 @@ tar_plan(
     command = convert_outliers_to_na(pima_raw_converted, sd_threshold = 3)
   ),
 
-  # --- Imputation Step ---
+  # imputation ----
   tar_target(
     name = pima_imputed,
     command = {
@@ -73,7 +73,7 @@ tar_plan(
         ))
     }
   ),
-  # --- Analysis AFTER Imputation ---
+  # after imputation ----
   tar_target(
     name = tbl_imputed_summary_0,
     # Use the imputed data as input
@@ -94,108 +94,23 @@ tar_plan(
   ),
   plot_imputed_corr = plot_correlation_by_vars(pima_imputed),
   plot_imputed_missing = naniar::vis_miss(pima_imputed),
-  # models
+  # split datasets ----
   pima_split = initial_split(pima_imputed, prop = 0.80, strata = outcome),
   pima_train = training(pima_split),
   pima_test = testing(pima_split),
-  pima_folds = vfold_cv(pima_train, strata = "outcome"),
-  # begin logistic regression ----
-  tar_target(
-    name = tuned_log_reg,
-    command = build_log_reg(
-      train = pima_train,
-      folds = pima_folds,
-      engine = "glmnet"
-    )
-  ),
-  tar_target(
-    name = results_log_reg,
-    command = model_log_reg(
-      workflow = tuned_log_reg$log_reg_wflow,
-      last_model = tuned_log_reg$log_reg_model,
-      test = pima_split
-    )
-  ),
-  tbl_cm_log_reg = conf_mat(results_log_reg$lr_last_fit[[5]][[1]], truth = outcome, estimate = .pred_class),
-  plot_cm_log_reg = plot_conf_mat(tbl_cm_log_reg),
-  tbl_results_log_reg = results_log_reg$lr_last_fit[[3]][[1]],
-  # end logistic regression ----
-  # knn begin ----
-  tar_target(
-    name = tuned_knn,
-    command = build_knn(
-      train = pima_train,
-      folds = pima_folds,
-      engine = "kknn"
-    )
-  ),
-  tar_target(
-    name = results_knn,
-    command = model_knn(
-      workflow = tuned_knn$knn_wflow,
-      last_model = tuned_knn$knn_model,
-      test = pima_split
-    )
-  ),
-  tbl_cm_knn = conf_mat(results_knn$knn_last_fit[[5]][[1]], truth = outcome, estimate = .pred_class),
-  plot_cm_knn = plot_conf_mat(tbl_cm_knn),
-  tbl_results_knn = results_knn$knn_last_fit[[3]][[1]],
-  
-  # knn end ----
-  # resamples begin ----
-  tar_target(
-    name = model_resamples,
-    command = list(knn = tuned_knn$knn_res, lr = tuned_log_reg$log_reg_res)
-  ),
-  # resamples end ----
-  # test results begin ----
-  tar_target(
-    name = test_set_results,
-    command = list(knn = results_knn$knn_last_fit, lr = results_log_reg$lr_last_fit)
-  ),
-  # test results end ----
-  lr_best_auc = select_best(model_resamples$lr, metric = "roc_auc"),
-  knn_best_auc = select_best(model_resamples$knn, metric = "roc_auc"),
-  tar_target(
-    name = models,
-    command = dplyr::bind_rows(
-      # logistic regression results
-      model_resamples$lr |>
-        collect_predictions(parameters = lr_best_auc) |>
-        roc_curve(outcome, .pred_nondiabetic) |>
-        mutate(model = "Logistic Reg."),
-      # nearest neighbor results
-      model_resamples$knn |>
-        collect_predictions(parameters = knn_best_auc) |>
-        roc_curve(outcome, .pred_nondiabetic) |>
-        mutate(model = "K-Nearest-Neighbor"),
-    )
-  ),
-  tar_target(
-    name = plot_roc_curve,
-    command = models |>
-      ggplot(aes(x = 1 - specificity, y = sensitivity, color = model)) +
-      geom_path() +
-      geom_abline(linetype = "dashed") +
-      scale_color_manual(values = c("Logistic Reg." = "blue", "K-Nearest-Neighbor" = "red")) +
-      labs(
-        title = "ROC Curve",
-        x = "1 - Specificity",
-        y = "Sensitivity"
-      ) +
-      theme_minimal()
-  ),
-  tar_target(
-    name = tbl_test_set_results,
-    command = {
-      metrics <- map_df(test_set_results, ~ bind_rows(.x[[".metrics"]], .id = "model"))
-      metrics$model <- c("knn", "knn", "knn", "lr", "lr", "lr")
-      final <-
-        metrics |>
-        arrange(desc(.metric), desc(.estimate)) |>
-        select(!.config)
-      final
-    }
-  )
+  pima_folds = vfold_cv(pima_train, strata = "outcome", v = 10),
+  # evaluate models ----
+  model_results = screen_for_best_model(pima_train, pima_folds),
+  tbl_model_results = extract_model_results(model_results),
+  plot_model_results = plot_model_results(model_results),
+  plot_ROC_curve = plot_model_roc_curve(model_results),
+  tbl_tuning_parameters = extract_tuning_parameters(model_results, "base_mars", "roc_auc"),
+  plot_tuning_grid = workflowsets::autoplot(model_results, id = "base_mars", metric = "roc_auc"),
+  # finalize ----
+  best_model_results = pull_best_model_results(model_results, "base_mars"),
+  model_test_results = fit_best_model(model_results, best_model_results, pima_split, "base_mars"),
+  tbl_test_results = collect_metrics(model_test_results),
+  final_cm = conf_mat(model_test_results[[5]][[1]], truth = outcome, estimate = .pred_class),
+  plot_conf_matrix = plot_conf_matrix(final_cm)
 )
 

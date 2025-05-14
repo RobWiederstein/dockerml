@@ -111,116 +111,229 @@ plot_correlation_by_vars <- function(data, mapping, ...) {
     # Add other ggpairs arguments (diag, upper, columns, etc.) as needed
   )
 }
-build_log_reg <- function(train, folds, engine, ...) {
-  # recipe ----
-  lr_recipe <-
-    recipe(formula = outcome ~ ., data = train) |>
-    step_zv(all_predictors()) |>
-    step_normalize()
-  # model ----
-  lr_mod <-
+# new additions
+screen_for_best_model <- function(data_train, data_folds){
+  # recipes ----
+  base_recipe <- recipe(formula = outcome ~ ., data = data_train)
+  
+  normalized_recipe <- 
+    base_recipe %>% 
+    step_normalize(all_predictors()) %>% 
+    step_zv(all_predictors())
+  
+  # model specifications ----
+  ## svm linear ----
+  # svm_linear_spec <-
+  #   svm_linear(
+  #     cost = tune()
+  #   ) %>%
+  #   set_engine("LiblineaR") %>%
+  #   set_mode("classification")
+  # hard_class_metrics <- metric_set(accuracy, sens, spec, f_meas, mcc, roc_auc)
+  # svm_linear_cost_grid <- grid_regular(cost(), levels = 10)
+  ## xgboost ----
+  xgb_spec <-
+    boost_tree(
+      trees = tune(),
+      tree_depth = tune(),
+      learn_rate = tune(),
+      loss_reduction = tune(),
+      sample_size = tune(),
+      mtry = tune()
+    ) %>%
+    set_engine("xgboost") %>%
+    set_mode("classification") %>%
+    translate()
+  ## brulee ----
+  mlp_brulee_spec <-
+    mlp(hidden_units = tune(),
+        penalty = tune(),
+        epochs = tune(),
+        learn_rate = tune(),
+        activation = "relu") %>% 
+    set_engine("brulee", verbose = F) %>% 
+    set_mode("classification")
+  # mars ----
+  mars_spec <-
+    mars(
+      num_terms = tune(),
+      prod_degree = tune(),
+      prune_method = tune()
+    ) %>%
+    set_engine("earth", nfold = 10) %>%
+    set_mode("classification")
+  # rpart ----
+  rpart_spec <-
+    decision_tree(
+      tree_depth = tune(), 
+      min_n = tune(), 
+      cost_complexity =tune()) %>%
+    set_engine("rpart") %>%
+    set_mode("classification")
+  
+  # random forrest ----
+  rf_spec <-
+    rand_forest(
+      mtry = tune(),
+      trees = tune(),
+      min_n = tune()
+    ) %>% 
+    set_engine("ranger") %>% 
+    set_mode("classification")
+  # knn ----
+  knn_spec <-
+    nearest_neighbor(
+      neighbors = tune(),
+      weight_func = tune()
+    ) %>%
+    set_engine("kknn") %>%
+    set_mode("classification") %>%
+    translate()
+  ## log reg ----
+  lr_spec <-
     logistic_reg(
       penalty = tune(),
-      mixture = 1) %>%
-    set_engine(engine)
-  # workflow ----
-  lr_workflow <-
-    workflow() %>%
-    add_recipe(lr_recipe) %>%
-    add_model(lr_mod)
+      mixture = tune()
+    ) %>%
+    set_engine("glmnet") %>%
+    set_mode("classification") %>%
+    translate()
+  ## nnet ----
+  nnet_spec <-
+    bag_mlp(
+      hidden_units = tune(),
+      penalty = tune(),
+      epochs = tune()
+    ) %>%
+    set_engine("nnet") %>%
+    set_mode("classification") %>%
+    translate()
+  
+  # create worksets ----
+  base <- 
+    workflow_set(
+      preproc = list(base = base_recipe),
+      models = list(mars = mars_spec,
+                    k_nrst_nghbr = knn_spec,
+                    random_forest = rf_spec,
+                    rpart = rpart_spec,
+                    xgboost = xgb_spec)
+    ) 
+  normalized <-
+    workflow_set(
+      preproc = list(normalized = normalized_recipe),
+      models = list(k_nrst_nghbr = knn_spec,
+                    log_regression = lr_spec, 
+                    neural_network = nnet_spec,
+                    mlp_brulee = mlp_brulee_spec)
+    ) #%>%
+    #option_add(metrics = hard_class_metrics, id = "normalized_svm_linear") %>% 
+    #option_add(grid = svm_linear_cost_grid, id = "normalized_svm_linear")
+  # adjust dials
+  #option_add(param_info = nnet_param, id = "normalized_neural_network")
+  
+  # combine ----
+  all_workflows <- bind_rows(base, normalized)
+  all_workflows
+  
   # create grid ----
-  lr_reg_grid <- tibble(penalty = 10^seq(-4, -1, length.out = 30))
-  # fit ----
-  lr_res <-
-    lr_workflow |>
-    tune_grid(
-      folds,
-      lr_reg_grid,
-      control = control_grid(save_pred = T),
-      metrics = metric_set(accuracy, roc_auc)
+  race_ctrl <-
+    control_race(
+      save_pred = TRUE,
+      parallel_over = "everything",
+      save_workflow = TRUE
     )
-  # select best params ----
-  lr_best <- select_best(lr_res, metric = "roc_auc")
-  #last lr_fit ----
-  lr_last_mod <-
-    logistic_reg(
-      penalty = lr_best[[1, 1]],
-      mixture = 1) %>%
-    set_engine(engine)
-  list(
-    log_reg_wflow = lr_workflow,
-    log_reg_model = lr_last_mod,
-    log_reg_res = lr_res
-  )
-
+  
+  # race results ----
+  race_results <-
+    all_workflows %>%
+    workflow_map(
+      "tune_race_anova",
+      seed = 1,
+      resamples = data_folds,
+      grid = 25,
+      control = race_ctrl
+    )
+  race_results
 }
-model_log_reg <- function(workflow, last_model, test) {
-  # last workflow
-  lr_last_workflow <-
-    workflow %>%
-    update_model(last_model)
-  # last fit
-  lr_last_fit <-
-    lr_last_workflow %>%
-    last_fit(test)
-  list(lr_last_workflow = lr_last_workflow,
-       lr_last_fit = lr_last_fit)
+extract_model_results <- function(data_wf_set){
+  successful_workflows <- data_wf_set %>%
+    filter(
+      !purrr::map_lgl(result, inherits, "try-error") & # Not a try-error
+        !purrr::map_lgl(result, is.null) &                 # Not NULL
+        !(purrr::map_lgl(result, is.list) & purrr::map_int(result, length) == 0) # Not an empty list
+    )
+  cat("Processing", nrow(successful_workflows), "workflow(s) with valid results for ranking.\n")
+  
+  results_tibble <- successful_workflows %>%
+    workflowsets::rank_results(select_best = TRUE) %>% # select_best = TRUE as in your original function
+    dplyr::filter(.metric == "roc_auc") %>%
+    dplyr::select(rank, wflow_id, .config, .metric, mean)
+  
+  return(results_tibble)
 }
-build_knn <- function(train, folds, engine, ...) {
-  ## knn ----
-  knn_recipe <-
-    recipe(formula = outcome ~ ., data = train) |>
-    step_scale()
-  # model
-  knn_mod <-
-    nearest_neighbor(
-      mode = "classification",
-      neighbors = tune(), #5
-      weight_func = tune(), # "triangular"
-      dist_power = tune() # 5
-    ) %>%
-    set_engine(engine)
-  # workflow
-  knn_workflow <-
-    workflow() %>%
-    add_recipe(knn_recipe) %>%
-    add_model(knn_mod)
-  # tune
-  knn_res <-
-    knn_workflow %>%
-    tune_grid(folds,
-              grid = 25,
-              control = control_grid(save_pred = TRUE),
-              metrics = metric_set(accuracy, roc_auc))
-  # select best parameters
-  knn_best <- select_best(knn_res, metric = "roc_auc")
-  # last fit
-  knn_last_mod <-
-    nearest_neighbor(
-      mode = "classification",
-      neighbors = knn_best[["neighbors"]][[1]], #5
-      weight_func = "gaussian", # "triangular"
-      dist_power = knn_best[["dist_power"]][[1]]
-    ) %>%
-    set_engine(engine)
-  list(knn_wflow = knn_workflow,
-       knn_model = knn_last_mod,
-       knn_res = knn_res
-  )
+plot_model_results <- function(data){
+  autoplot(
+    data,
+    rank_metric = "roc_auc",
+    metric = "roc_auc",
+    select_best = TRUE
+  ) +
+    geom_text(aes(y = mean -.035, label = wflow_id), angle = 90, hjust = 1, size = 4.5) +
+    coord_cartesian(ylim = c(0.7, 0.9)) +
+    scale_x_continuous(breaks = 1:10, minor_breaks = NULL) +
+    cowplot::theme_half_open() +
+    theme(legend.position = "none")
 }
-model_knn <- function(workflow, last_model, test){
-  # update workflow
-  knn_last_workflow <-
-    workflow |>
-    update_model(last_model)
-  # last fit
-  knn_last_fit <-
-    knn_last_workflow |>
-    last_fit(test)
-  list(knn_last_workflow = knn_last_workflow,
-       knn_last_fit = knn_last_fit)
+plot_model_roc_curve <- function(data){
+  # pull the best performing models by fold
+  data %>% 
+    workflowsets::rank_results() %>% 
+    dplyr::filter(.metric == "roc_auc") %>% 
+    group_by(wflow_id) %>% 
+    arrange(wflow_id, desc(mean)) %>% 
+    slice_head(n = 1) %>% 
+    ungroup() %>% 
+    arrange(desc(mean)) %>% 
+    mutate(best_mod_folds = paste(wflow_id, .config, sep = "_"), .before = .metric) %>% 
+    pull(best_mod_folds) -> best_model_folds
+  # filter model predictions to best performing fold
+  data %>% 
+    collect_predictions() %>% 
+    mutate(wflow_id_config = paste(wflow_id, .config, sep = "_"), .before = preproc) %>% 
+    filter(wflow_id_config %in% best_model_folds) -> best_model_predictions
+  
+  # plot
+  best_model_predictions  %>%
+    group_by(wflow_id) %>% 
+    roc_curve(truth = outcome, .pred_nondiabetic) %>% 
+    ggplot(aes(x = 1 - specificity, 
+               y = sensitivity,
+               color = wflow_id)) +
+    geom_path() +
+    geom_abline(lty = 3) +
+    coord_equal() +
+    theme_minimal_grid() +
+    labs(color = "Recipe_Model:")
 }
-plot_conf_mat <- function(conf_mat) {
+extract_tuning_parameters <- function(data, model_id, metric){
+  data %>%
+    extract_workflow_set_result(id = model_id) %>%
+    select_best(metric = metric)
+}
+# finalize
+pull_best_model_results <- function(data, model_id){
+  data %>%
+    extract_workflow_set_result(model_id) %>%
+    select_best(metric = "roc_auc")
+}
+fit_best_model <- function(all_results, best_model_results, data_split, workflow_id){
+  all_results %>%
+    extract_workflow(workflow_id) %>%
+    finalize_workflow(best_model_results) %>%
+    last_fit(split = data_split)
+}
+plot_conf_matrix <- function(conf_mat) {
   # extract and calculate pct for heat map
   conf_df <- conf_mat[["table"]] %>%
     as_tibble() %>%

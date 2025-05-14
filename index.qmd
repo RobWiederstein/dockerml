@@ -1,5 +1,5 @@
 ---
-title: "Pima Indians"
+title: "Pima Indians Diabetes"
 format:
   html:
     theme: 
@@ -37,27 +37,8 @@ library("tarchetypes")
 library("ggplot2")
 library("visNetwork")
 library("kableExtra")
-targets::tar_load(c(
-  pima_raw,
-  downloaded_file_info,
-  tbl_raw_summary_0,
-  tbl_raw_summary_1,
-  tbl_imputed_summary_0,
-  tbl_imputed_summary_1,
-  tbl_test_set_results,
-  tbl_cm_knn,
-  tbl_cm_log_reg,
-  plot_raw_missing,
-  plot_raw_outliers,
-  plot_imputed_outliers,
-  plot_imputed_corr,
-  plot_imputed_missing,
-  plot_roc_curve,
-  plot_cm_knn,
-  plot_cm_log_reg
-  
-))
-
+#library("cowplot")
+targets::tar_load_everything()
 # functions
 format_table <- function(data, ...) {
   kbl(data) %>%
@@ -211,37 +192,61 @@ As a parametric model, logistic regression learns the coefficients $$(β i)$$ fr
 
 # Results
 
+
+
+## Optimal Tuning Parameters
+
+```{r}
+format_table(best_model_results)
+```
+
+## Model Results
+
+```{r}
+plot_model_results
+```
+
 ## Receiver Operator Curve
 
 The Receiver Operating Characteristic (ROC) curve is a fundamental tool in machine learning and statistics for evaluating the performance of binary classification models. Originating from signal detection theory developed during World War II to analyze radar signals, the ROC curve graphically illustrates a classifier's diagnostic ability across all possible classification thresholds. It plots the True Positive Rate (TPR), also known as sensitivity or recall (the proportion of actual positives correctly identified), on the Y-axis against the False Positive Rate (FPR), which is equal to 1 minus specificity (the proportion of actual negatives incorrectly identified as positive), on the X-axis. Each point on the curve corresponds to a specific threshold used to convert the model's continuous output (like a probability score) into a binary decision (0 or 1); varying this threshold traces the curve. A model with better discriminative power will have a curve that bows towards the top-left corner (representing 100% TPR and 0% FPR), while a model performing no better than random chance lies along the diagonal line (TPR = FPR). The overall performance across all thresholds is commonly summarized by the Area Under the Curve (AUC or AUROC), a value ranging from 0.5 (random chance) to 1.0 (perfect classification), representing the probability that the model ranks a randomly chosen positive instance higher than a randomly chosen negative one.
 
-```{r}
-plot_roc_curve
-```
-
-## Scores
+## Model ROC Curves
 
 ```{r}
-format_table(tbl_test_set_results)
-```
-
-## Confusion matrix
-
-### KNN
-
-```{r}
-plot_cm_knn
-```
-
-### Logistic Regression
-
-```{r}
-plot_cm_log_reg
+plot_ROC_curve
 ```
 
 
+## MARS Tuning Grid
+
+```{r}
+plot_tuning_grid
+```
+
+## Models Ranked
+
+```{r}
+format_table(tbl_model_results)
+```
+
+
+## Best Tuning Parameters for MARS
+
+```{r}
+format_table(tbl_tuning_parameters)
+```
+
+
+## MARS Confusion Matrix
+
+
+```{r}
+plot_conf_matrix
+```
 
 # Conclusion
+
+The purpose of this report was to create a reproducible pipeline such that it could be recreated.  However, one note is that the results from the ML models were poor: the false negatives are way too high, in my opinion.  In the real world, a number of people would have been told that they did not have diabetes when they in fact did.  This would have to be addressed in the future modeling and hopefully the overall accuracy, both for the positives and negatives, would increase.
 
 _Report generated at `r Sys.time()`_
 
