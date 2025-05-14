@@ -12,7 +12,7 @@ execute:
   echo: false
   warning: false
   message: false
-  error: true
+  error: TRUE
   eval: true
   cache: FALSE
 number-sections: true
