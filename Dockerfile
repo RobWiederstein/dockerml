@@ -53,6 +53,7 @@ COPY renv/activate.R renv/activate.R
 
 # Restore packages from lockfile (will use cache if lockfile unchanged)
 RUN Rscript -e "renv::restore()"
+RUN R -e "print(utils::installed.packages()[,'Package']); message('Attempting to install torch backend...'); torch::install_torch()"
 
 # Copy remaining project files
 COPY R R/
