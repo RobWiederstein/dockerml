@@ -217,12 +217,6 @@ plot_ROC_curve
 ```
 
 
-## MARS Tuning Grid
-
-```{r}
-plot_tuning_grid
-```
-
 ## Models Ranked
 
 ```{r}
