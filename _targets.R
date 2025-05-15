@@ -113,4 +113,3 @@ tar_plan(
   final_cm = conf_mat(model_test_results[[5]][[1]], truth = outcome, estimate = .pred_class),
   plot_conf_matrix = plot_conf_matrix(final_cm)
 )
-
