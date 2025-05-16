@@ -34,7 +34,7 @@ tar_plan(
   # explore ----
   tbl_raw_summary_0 = summarize_pima_raw(pima_raw_converted, diabetes = 0),
   tbl_raw_summary_1 = summarize_pima_raw(pima_raw_converted, diabetes = 1),
-  plot_raw_missing  = naniar::vis_miss(pima_raw_converted),
+  plot_raw_missing = naniar::vis_miss(pima_raw_converted),
   plot_raw_outliers = plot_scaled_outliers_3_sd_or_more(pima_raw_converted),
   pima_raw_ol_to_na = convert_outliers_to_na(pima_raw_converted, sd_threshold = 3),
   # imputation ----

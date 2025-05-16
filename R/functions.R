@@ -9,14 +9,14 @@ convert_outliers_to_na <- function(data, sd_threshold = 3, na_rm = TRUE) {
   if (!is.data.frame(data)) {
     stop("Input 'data' must be a data frame or tibble.")
   }
-  
+
   # Apply the mutation across numeric columns
   data %>%
     mutate(across(where(is.numeric), ~ {
       # Calculate mean and sd for the current column (.x)
       col_mean <- mean(.x, na.rm = na_rm)
       col_sd <- sd(.x, na.rm = na_rm)
-      
+
       # Check if sd is valid (not NA and not zero)
       if (is.na(col_sd) || col_sd == 0) {
         # If sd is invalid, return the column unchanged
@@ -50,12 +50,12 @@ extract_model_results <- function(data_wf_set) {
         !(purrr::map_lgl(result, is.list) & purrr::map_int(result, length) == 0) # Not an empty list
     )
   cat("Processing", nrow(successful_workflows), "workflow(s) with valid results for ranking.\n")
-  
+
   results_tibble <- successful_workflows %>%
     workflowsets::rank_results(select_best = TRUE) %>% # select_best = TRUE as in your original function
     dplyr::filter(.metric == "roc_auc") %>%
     dplyr::select(rank, wflow_id, .config, .metric, mean)
-  
+
   return(results_tibble)
 }
 extract_tuning_parameters <- function(data, model_id, metric) {
@@ -69,7 +69,7 @@ fit_best_model <- function(all_results, best_model_results, data_split, workflow
     finalize_workflow(best_model_results) %>%
     last_fit(split = data_split)
 }
-impute_nas_via_mice <- function(data){
+impute_nas_via_mice <- function(data) {
   mice_output <- mice::mice(data, m = 1, method = "pmm", seed = 123, printFlag = FALSE)
   pima_imputed_by_mice <- mice::complete(mice_output, 1)
   pima_imputed_by_mice %>%
@@ -77,8 +77,7 @@ impute_nas_via_mice <- function(data){
       outcome,
       levels = c(0, 1),
       labels = c("nondiabetic", "diabetic")
-    )
-    )
+    ))
 }
 plot_conf_matrix <- function(conf_mat) {
   # extract and calculate pct for heat map
@@ -120,7 +119,7 @@ plot_correlation_by_vars <- function(data, mapping, ...) {
       geom_smooth(method = "loess", se = FALSE, color = "steelblue", ...) +
       theme_classic()
   }
-  
+
   # Assuming 'your_data' is your data frame with numeric columns
   ggpairs(
     data %>%
@@ -162,7 +161,7 @@ plot_model_roc_curve <- function(data) {
     collect_predictions() %>%
     mutate(wflow_id_config = paste(wflow_id, .config, sep = "_"), .before = preproc) %>%
     filter(wflow_id_config %in% all_of(best_model_folds)) -> best_model_predictions
-  
+
   # plot
   best_model_predictions %>%
     group_by(wflow_id) %>%
@@ -229,12 +228,12 @@ read_in_csv_file <- function(data, ...) {
 screen_for_best_model <- function(data_train, data_folds) {
   # recipes ----
   base_recipe <- recipe(formula = outcome ~ ., data = data_train)
-  
+
   normalized_recipe <-
     base_recipe %>%
     step_normalize(all_predictors()) %>%
     step_zv(all_predictors())
-  
+
   # model specifications ----
   ## svm linear ----
   # svm_linear_spec <-
@@ -287,7 +286,7 @@ screen_for_best_model <- function(data_train, data_folds) {
     ) %>%
     set_engine("rpart") %>%
     set_mode("classification")
-  
+
   # random forrest ----
   rf_spec <-
     rand_forest(
@@ -325,7 +324,7 @@ screen_for_best_model <- function(data_train, data_folds) {
     set_engine("nnet") %>%
     set_mode("classification") %>%
     translate()
-  
+
   # create worksets ----
   base <-
     workflow_set(
@@ -352,11 +351,11 @@ screen_for_best_model <- function(data_train, data_folds) {
   # option_add(grid = svm_linear_cost_grid, id = "normalized_svm_linear")
   # adjust dials
   # option_add(param_info = nnet_param, id = "normalized_neural_network")
-  
+
   # combine ----
   all_workflows <- bind_rows(base, normalized)
   all_workflows
-  
+
   # create grid ----
   race_ctrl <-
     control_race(
@@ -364,7 +363,7 @@ screen_for_best_model <- function(data_train, data_folds) {
       parallel_over = "everything",
       save_workflow = TRUE
     )
-  
+
   # race results ----
   race_results <-
     all_workflows %>%
@@ -377,7 +376,7 @@ screen_for_best_model <- function(data_train, data_folds) {
     )
   race_results
 }
-summarize_pima_raw <- function(data, diabetes){
+summarize_pima_raw <- function(data, diabetes) {
   psych::describe(filter(data, outcome == diabetes)) %>%
     dplyr::select(-n, -skew, -kurtosis, -se) %>%
     dplyr::mutate(across(where(is.numeric), ~ round(.x, 2)))
