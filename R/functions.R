@@ -4,6 +4,31 @@ build_file_info_table <- function(data, rownames = "attributes", round = 2) {
     tibble::as_tibble(rownames = rownames) %>%
     dplyr::rename(value = round)
 }
+convert_outliers_to_na <- function(data, sd_threshold = 3, na_rm = TRUE) {
+  # Check if input is a data frame
+  if (!is.data.frame(data)) {
+    stop("Input 'data' must be a data frame or tibble.")
+  }
+  
+  # Apply the mutation across numeric columns
+  data %>%
+    mutate(across(where(is.numeric), ~ {
+      # Calculate mean and sd for the current column (.x)
+      col_mean <- mean(.x, na.rm = na_rm)
+      col_sd <- sd(.x, na.rm = na_rm)
+      
+      # Check if sd is valid (not NA and not zero)
+      if (is.na(col_sd) || col_sd == 0) {
+        # If sd is invalid, return the column unchanged
+        .x
+      } else {
+        # Identify outliers
+        is_outlier <- abs(.x - col_mean) > (sd_threshold * col_sd)
+        # Replace outliers with NA_real_ (numeric NA)
+        ifelse(is_outlier, NA_real_, .x)
+      }
+    }))
+}
 create_user_folders <- function(dir_name) {
   something <- function(dir_name) {
     target_dir <- here::here("_targets", "user", dir_name)
@@ -17,39 +42,141 @@ create_user_folders <- function(dir_name) {
   print("Creating user directories...")
   purrr::walk(dir_name, something)
 }
-convert_outliers_to_na <- function(data, sd_threshold = 3, na_rm = TRUE) {
-  # Check if input is a data frame
-  if (!is.data.frame(data)) {
-    stop("Input 'data' must be a data frame or tibble.")
-  }
-
-  # Apply the mutation across numeric columns
+extract_model_results <- function(data_wf_set) {
+  successful_workflows <- data_wf_set %>%
+    filter(
+      !purrr::map_lgl(result, inherits, "try-error") & # Not a try-error
+        !purrr::map_lgl(result, is.null) & # Not NULL
+        !(purrr::map_lgl(result, is.list) & purrr::map_int(result, length) == 0) # Not an empty list
+    )
+  cat("Processing", nrow(successful_workflows), "workflow(s) with valid results for ranking.\n")
+  
+  results_tibble <- successful_workflows %>%
+    workflowsets::rank_results(select_best = TRUE) %>% # select_best = TRUE as in your original function
+    dplyr::filter(.metric == "roc_auc") %>%
+    dplyr::select(rank, wflow_id, .config, .metric, mean)
+  
+  return(results_tibble)
+}
+extract_tuning_parameters <- function(data, model_id, metric) {
   data %>%
-    mutate(across(where(is.numeric), ~ {
-      # Calculate mean and sd for the current column (.x)
-      col_mean <- mean(.x, na.rm = na_rm)
-      col_sd <- sd(.x, na.rm = na_rm)
-
-      # Check if sd is valid (not NA and not zero)
-      if (is.na(col_sd) || col_sd == 0) {
-        # If sd is invalid, return the column unchanged
-        .x
-      } else {
-        # Identify outliers
-        is_outlier <- abs(.x - col_mean) > (sd_threshold * col_sd)
-        # Replace outliers with NA_real_ (numeric NA)
-        ifelse(is_outlier, NA_real_, .x)
-      }
-    }))
+    extract_workflow_set_result(id = model_id) %>%
+    select_best(metric = metric)
 }
-switch_0_to_NA <- function(data) {
-  cols_to_impute <- c("glucose", "blood_pressure", "skin_thickness", "insulin", "bmi")
-  data %>% mutate(across(all_of(cols_to_impute), ~ ifelse(.x == 0, NA_real_, .x)))
+fit_best_model <- function(all_results, best_model_results, data_split, workflow_id) {
+  all_results %>%
+    extract_workflow(workflow_id) %>%
+    finalize_workflow(best_model_results) %>%
+    last_fit(split = data_split)
 }
-summarize_pima_raw <- function(data, diabetes){
-  psych::describe(filter(data, outcome == diabetes)) %>%
-    dplyr::select(-n, -skew, -kurtosis, -se) %>%
-    dplyr::mutate(across(where(is.numeric), ~ round(.x, 2)))
+impute_nas_via_mice <- function(data){
+  mice_output <- mice::mice(data, m = 1, method = "pmm", seed = 123, printFlag = FALSE)
+  pima_imputed_by_mice <- mice::complete(mice_output, 1)
+  pima_imputed_by_mice %>%
+    mutate(outcome = factor(
+      outcome,
+      levels = c(0, 1),
+      labels = c("nondiabetic", "diabetic")
+    )
+    )
+}
+plot_conf_matrix <- function(conf_mat) {
+  # extract and calculate pct for heat map
+  conf_df <- conf_mat[["table"]] %>%
+    as_tibble() %>%
+    mutate(total = sum(n)) %>%
+    mutate(pct = n / total)
+  names(conf_df)
+  names(conf_df)[1] <- "Predicted"
+  names(conf_df)[2] <- "Actual"
+  # reorder factors to mirror common conf matrix
+  conf_df$Predicted <- factor(conf_df$Predicted, levels = c("nondiabetic", "diabetic"))
+  conf_df$Actual <- factor(conf_df$Actual, levels = c("diabetic", "nondiabetic"))
+  # create the heatmap with ggplot2
+  ggplot(conf_df, aes(x = Predicted, y = Actual, fill = pct)) +
+    geom_tile(color = "white") +
+    geom_label(aes(label = n), vjust = 0.5, hjust = 0.5, size = 8, fill = "white") +
+    scale_fill_distiller(palette = "YlOrRd", type = "seq", direction = 1) +
+    theme_minimal() +
+    scale_x_discrete(position = "top") +
+    theme(
+      axis.text.x = element_text(hjust = 0.5, vjust = 0, size = 12),
+      axis.text.x.top = element_text(vjust = -3),
+      axis.text.y = element_text(size = 12),
+      axis.title = element_text(size = 20),
+      legend.position = "none",
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      aspect.ratio = 1
+    )
+}
+plot_correlation_by_vars <- function(data, mapping, ...) {
+  my_ggpairs_scatter_smooth <- function(data, mapping, ...) {
+    ggplot(data = data, mapping = mapping) +
+      # Add points (adjust alpha/size for overplotting)
+      geom_point(alpha = 0.3, size = 0.05) +
+      # Add smoother line (method="loess" by default for <1000 pts, "gam" otherwise)
+      # se = FALSE hides the confidence interval ribbon
+      geom_smooth(method = "loess", se = FALSE, color = "steelblue", ...) +
+      theme_classic()
+  }
+  
+  # Assuming 'your_data' is your data frame with numeric columns
+  ggpairs(
+    data %>%
+      select(-outcome) %>%
+      select(where(is.numeric)),
+    lower = list(
+      continuous = my_ggpairs_scatter_smooth # Use your custom function here
+    )
+    # Add other ggpairs arguments (diag, upper, columns, etc.) as needed
+  )
+}
+plot_model_results <- function(data) {
+  autoplot(
+    data,
+    rank_metric = "roc_auc",
+    metric = "roc_auc",
+    select_best = TRUE
+  ) +
+    geom_text(aes(y = mean - .035, label = wflow_id), angle = 90, hjust = 1, size = 4.5) +
+    coord_cartesian(ylim = c(0.7, 0.9)) +
+    scale_x_continuous(breaks = 1:10, minor_breaks = NULL) +
+    cowplot::theme_half_open() +
+    theme(legend.position = "none")
+}
+plot_model_roc_curve <- function(data) {
+  # pull the best performing models by fold
+  data %>%
+    workflowsets::rank_results() %>%
+    dplyr::filter(.metric == "roc_auc") %>%
+    group_by(wflow_id) %>%
+    arrange(wflow_id, desc(mean)) %>%
+    slice_head(n = 1) %>%
+    ungroup() %>%
+    arrange(desc(mean)) %>%
+    mutate(best_mod_folds = paste(wflow_id, .config, sep = "_"), .before = .metric) %>%
+    pull(best_mod_folds) -> best_model_folds
+  # filter model predictions to best performing fold
+  data %>%
+    collect_predictions() %>%
+    mutate(wflow_id_config = paste(wflow_id, .config, sep = "_"), .before = preproc) %>%
+    filter(wflow_id_config %in% all_of(best_model_folds)) -> best_model_predictions
+  
+  # plot
+  best_model_predictions %>%
+    group_by(wflow_id) %>%
+    roc_curve(truth = outcome, .pred_nondiabetic) %>%
+    ggplot(aes(
+      x = 1 - specificity,
+      y = sensitivity,
+      color = wflow_id
+    )) +
+    geom_path() +
+    geom_abline(lty = 3) +
+    coord_equal() +
+    theme_minimal_grid() +
+    labs(color = "Recipe_Model:")
 }
 plot_scaled_outliers_3_sd_or_more <- function(data) {
   data %>%
@@ -86,6 +213,11 @@ plot_scaled_outliers_3_sd_or_more <- function(data) {
     theme_minimal() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 }
+pull_best_model_results <- function(data, model_id) {
+  data %>%
+    extract_workflow_set_result(model_id) %>%
+    select_best(metric = "roc_auc")
+}
 read_in_csv_file <- function(data, ...) {
   vroom(
     data,
@@ -94,48 +226,15 @@ read_in_csv_file <- function(data, ...) {
   ) %>%
     dplyr::rename(dbf = diabetes_pedigree_function)
 }
-plot_correlation_by_vars <- function(data, mapping, ...) {
-  my_ggpairs_scatter_smooth <- function(data, mapping, ...) {
-    ggplot(data = data, mapping = mapping) +
-      # Add points (adjust alpha/size for overplotting)
-      geom_point(alpha = 0.3, size = 0.05) +
-      # Add smoother line (method="loess" by default for <1000 pts, "gam" otherwise)
-      # se = FALSE hides the confidence interval ribbon
-      geom_smooth(method = "loess", se = FALSE, color = "steelblue", ...) +
-      theme_classic()
-  }
-
-  # Assuming 'your_data' is your data frame with numeric columns
-  ggpairs(
-    data %>%
-      select(-outcome) %>%
-      select(where(is.numeric)),
-    lower = list(
-      continuous = my_ggpairs_scatter_smooth # Use your custom function here
-    )
-    # Add other ggpairs arguments (diag, upper, columns, etc.) as needed
-  )
-}
-impute_nas_via_mice <- function(data){
-  mice_output <- mice::mice(data, m = 1, method = "pmm", seed = 123, printFlag = FALSE)
-  pima_imputed_by_mice <- mice::complete(mice_output, 1)
-  pima_imputed_by_mice %>%
-    mutate(outcome = factor(
-      outcome,
-      levels = c(0, 1),
-      labels = c("nondiabetic", "diabetic")
-    )
-  )
-}
 screen_for_best_model <- function(data_train, data_folds) {
   # recipes ----
   base_recipe <- recipe(formula = outcome ~ ., data = data_train)
-
+  
   normalized_recipe <-
     base_recipe %>%
     step_normalize(all_predictors()) %>%
     step_zv(all_predictors())
-
+  
   # model specifications ----
   ## svm linear ----
   # svm_linear_spec <-
@@ -188,7 +287,7 @@ screen_for_best_model <- function(data_train, data_folds) {
     ) %>%
     set_engine("rpart") %>%
     set_mode("classification")
-
+  
   # random forrest ----
   rf_spec <-
     rand_forest(
@@ -226,7 +325,7 @@ screen_for_best_model <- function(data_train, data_folds) {
     set_engine("nnet") %>%
     set_mode("classification") %>%
     translate()
-
+  
   # create worksets ----
   base <-
     workflow_set(
@@ -253,11 +352,11 @@ screen_for_best_model <- function(data_train, data_folds) {
   # option_add(grid = svm_linear_cost_grid, id = "normalized_svm_linear")
   # adjust dials
   # option_add(param_info = nnet_param, id = "normalized_neural_network")
-
+  
   # combine ----
   all_workflows <- bind_rows(base, normalized)
   all_workflows
-
+  
   # create grid ----
   race_ctrl <-
     control_race(
@@ -265,7 +364,7 @@ screen_for_best_model <- function(data_train, data_folds) {
       parallel_over = "everything",
       save_workflow = TRUE
     )
-
+  
   # race results ----
   race_results <-
     all_workflows %>%
@@ -278,111 +377,12 @@ screen_for_best_model <- function(data_train, data_folds) {
     )
   race_results
 }
-extract_model_results <- function(data_wf_set) {
-  successful_workflows <- data_wf_set %>%
-    filter(
-      !purrr::map_lgl(result, inherits, "try-error") & # Not a try-error
-        !purrr::map_lgl(result, is.null) & # Not NULL
-        !(purrr::map_lgl(result, is.list) & purrr::map_int(result, length) == 0) # Not an empty list
-    )
-  cat("Processing", nrow(successful_workflows), "workflow(s) with valid results for ranking.\n")
-
-  results_tibble <- successful_workflows %>%
-    workflowsets::rank_results(select_best = TRUE) %>% # select_best = TRUE as in your original function
-    dplyr::filter(.metric == "roc_auc") %>%
-    dplyr::select(rank, wflow_id, .config, .metric, mean)
-
-  return(results_tibble)
+summarize_pima_raw <- function(data, diabetes){
+  psych::describe(filter(data, outcome == diabetes)) %>%
+    dplyr::select(-n, -skew, -kurtosis, -se) %>%
+    dplyr::mutate(across(where(is.numeric), ~ round(.x, 2)))
 }
-plot_model_results <- function(data) {
-  autoplot(
-    data,
-    rank_metric = "roc_auc",
-    metric = "roc_auc",
-    select_best = TRUE
-  ) +
-    geom_text(aes(y = mean - .035, label = wflow_id), angle = 90, hjust = 1, size = 4.5) +
-    coord_cartesian(ylim = c(0.7, 0.9)) +
-    scale_x_continuous(breaks = 1:10, minor_breaks = NULL) +
-    cowplot::theme_half_open() +
-    theme(legend.position = "none")
-}
-plot_model_roc_curve <- function(data) {
-  # pull the best performing models by fold
-  data %>%
-    workflowsets::rank_results() %>%
-    dplyr::filter(.metric == "roc_auc") %>%
-    group_by(wflow_id) %>%
-    arrange(wflow_id, desc(mean)) %>%
-    slice_head(n = 1) %>%
-    ungroup() %>%
-    arrange(desc(mean)) %>%
-    mutate(best_mod_folds = paste(wflow_id, .config, sep = "_"), .before = .metric) %>%
-    pull(best_mod_folds) -> best_model_folds
-  # filter model predictions to best performing fold
-  data %>%
-    collect_predictions() %>%
-    mutate(wflow_id_config = paste(wflow_id, .config, sep = "_"), .before = preproc) %>%
-    filter(wflow_id_config %in% all_of(best_model_folds)) -> best_model_predictions
-
-  # plot
-  best_model_predictions %>%
-    group_by(wflow_id) %>%
-    roc_curve(truth = outcome, .pred_nondiabetic) %>%
-    ggplot(aes(
-      x = 1 - specificity,
-      y = sensitivity,
-      color = wflow_id
-    )) +
-    geom_path() +
-    geom_abline(lty = 3) +
-    coord_equal() +
-    theme_minimal_grid() +
-    labs(color = "Recipe_Model:")
-}
-extract_tuning_parameters <- function(data, model_id, metric) {
-  data %>%
-    extract_workflow_set_result(id = model_id) %>%
-    select_best(metric = metric)
-}
-pull_best_model_results <- function(data, model_id) {
-  data %>%
-    extract_workflow_set_result(model_id) %>%
-    select_best(metric = "roc_auc")
-}
-fit_best_model <- function(all_results, best_model_results, data_split, workflow_id) {
-  all_results %>%
-    extract_workflow(workflow_id) %>%
-    finalize_workflow(best_model_results) %>%
-    last_fit(split = data_split)
-}
-plot_conf_matrix <- function(conf_mat) {
-  # extract and calculate pct for heat map
-  conf_df <- conf_mat[["table"]] %>%
-    as_tibble() %>%
-    mutate(total = sum(n)) %>%
-    mutate(pct = n / total)
-  names(conf_df)
-  names(conf_df)[1] <- "Predicted"
-  names(conf_df)[2] <- "Actual"
-  # reorder factors to mirror common conf matrix
-  conf_df$Predicted <- factor(conf_df$Predicted, levels = c("nondiabetic", "diabetic"))
-  conf_df$Actual <- factor(conf_df$Actual, levels = c("diabetic", "nondiabetic"))
-  # create the heatmap with ggplot2
-  ggplot(conf_df, aes(x = Predicted, y = Actual, fill = pct)) +
-    geom_tile(color = "white") +
-    geom_label(aes(label = n), vjust = 0.5, hjust = 0.5, size = 8, fill = "white") +
-    scale_fill_distiller(palette = "YlOrRd", type = "seq", direction = 1) +
-    theme_minimal() +
-    scale_x_discrete(position = "top") +
-    theme(
-      axis.text.x = element_text(hjust = 0.5, vjust = 0, size = 12),
-      axis.text.x.top = element_text(vjust = -3),
-      axis.text.y = element_text(size = 12),
-      axis.title = element_text(size = 20),
-      legend.position = "none",
-      panel.grid.major = element_blank(),
-      panel.grid.minor = element_blank(),
-      aspect.ratio = 1
-    )
+switch_0_to_NA <- function(data) {
+  cols_to_impute <- c("glucose", "blood_pressure", "skin_thickness", "insulin", "bmi")
+  data %>% mutate(across(all_of(cols_to_impute), ~ ifelse(.x == 0, NA_real_, .x)))
 }
