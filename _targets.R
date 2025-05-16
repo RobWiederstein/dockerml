@@ -19,79 +19,30 @@ raw_pima_data_path <- here::here(data_dir, "pima_indians_diabetes_dataset.csv")
 
 # Define the target plan using explicit tar_target() / tar_download()
 tar_plan(
-  # Download (track remote changes)
+  # Download ----
   tar_download(
     name = pima_data,
     urls = pima_data_url,
     paths = raw_pima_data_path
   ),
-  # File info
+  # File info ----
   downloaded_file_info = build_file_info_table(pima_data),
-  # Load raw data
+  # Load raw data ----
   pima_raw = read_in_csv_file(pima_data),
-  # Convert zeros to NAs using the custom function
+  # zeroes to NA ----
   pima_raw_converted = switch_0_to_NA(pima_raw),
-  # --- Analysis BEFORE Imputation ---
-  tar_target(
-    name = tbl_raw_summary_0,
-    command = psych::describe(filter(pima_raw_converted, outcome == 0)) %>%
-      dplyr::select(-n, -skew, -kurtosis, -se) %>%
-      dplyr::mutate(across(where(is.numeric), ~ round(.x, 2)))
-  ),
-  tar_target(
-    name = tbl_raw_summary_1,
-    command = psych::describe(filter(pima_raw_converted, outcome == 1)) %>%
-      dplyr::select(-n, -skew, -kurtosis, -se) %>%
-      dplyr::mutate(across(where(is.numeric), ~ round(.x, 2)))
-  ),
-  tar_target(
-    name = plot_raw_missing,
-    command = naniar::vis_miss(pima_raw_converted)
-  ),
-  tar_target(
-    name = plot_raw_outliers,
-    command = plot_scaled_outliers_3_sd_or_more(
-      pima_raw_converted
-    )
-  ),
-  # set outliers > 3 sd to NA 652 to 694
-  tar_target(
-    pima_raw_ol_to_na,
-    command = convert_outliers_to_na(pima_raw_converted, sd_threshold = 3)
-  ),
-
+  # explore ----
+  tbl_raw_summary_0 = summarize_pima_raw(pima_raw_converted, diabetes = 0),
+  tbl_raw_summary_1 = summarize_pima_raw(pima_raw_converted, diabetes = 1),
+  plot_raw_missing  = naniar::vis_miss(pima_raw_converted),
+  plot_raw_outliers = plot_scaled_outliers_3_sd_or_more(pima_raw_converted),
+  pima_raw_ol_to_na = convert_outliers_to_na(pima_raw_converted, sd_threshold = 3),
   # imputation ----
-  tar_target(
-    name = pima_imputed,
-    command = {
-      mice_output <- mice::mice(pima_raw_ol_to_na, m = 1, method = "pmm", seed = 123, printFlag = FALSE)
-      pima_imputed_by_mice <- mice::complete(mice_output, 1)
-      pima_imputed_by_mice %>%
-        mutate(outcome = factor(outcome,
-          levels = c(0, 1),
-          labels = c("nondiabetic", "diabetic")
-        ))
-    }
-  ),
+  pima_imputed = impute_nas_via_mice(pima_raw_ol_to_na),
   # after imputation ----
-  tar_target(
-    name = tbl_imputed_summary_0,
-    # Use the imputed data as input
-    command = psych::describe(filter(pima_imputed, outcome == "nondiabetic")) %>%
-      dplyr::select(-n, -skew, -kurtosis, -se) %>%
-      dplyr::mutate(across(where(is.numeric), ~ round(.x, 2))),
-  ),
-  tar_target(
-    name = tbl_imputed_summary_1,
-    # Use the imputed data as input
-    command = psych::describe(filter(pima_imputed, outcome == "diabetic")) %>%
-      dplyr::select(-n, -skew, -kurtosis, -se) %>%
-      dplyr::mutate(across(where(is.numeric), ~ round(.x, 2))),
-  ),
-  tar_target(
-    name = plot_imputed_outliers,
-    command = plot_scaled_outliers_3_sd_or_more(pima_imputed)
-  ),
+  tbl_imputed_summary_0 = summarize_pima_raw(pima_imputed, diabetes = "diabetic"),
+  tbl_imputed_summary_1 = summarize_pima_raw(pima_imputed, diabetes = "nondiabetic"),
+  plot_imputed_outliers = plot_scaled_outliers_3_sd_or_more(pima_imputed),
   plot_imputed_corr = plot_correlation_by_vars(pima_imputed),
   plot_imputed_missing = naniar::vis_miss(pima_imputed),
   # split datasets ----

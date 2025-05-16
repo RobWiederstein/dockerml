@@ -46,6 +46,11 @@ switch_0_to_NA <- function(data) {
   cols_to_impute <- c("glucose", "blood_pressure", "skin_thickness", "insulin", "bmi")
   data %>% mutate(across(all_of(cols_to_impute), ~ ifelse(.x == 0, NA_real_, .x)))
 }
+summarize_pima_raw <- function(data, diabetes){
+  psych::describe(filter(data, outcome == diabetes)) %>%
+    dplyr::select(-n, -skew, -kurtosis, -se) %>%
+    dplyr::mutate(across(where(is.numeric), ~ round(.x, 2)))
+}
 plot_scaled_outliers_3_sd_or_more <- function(data) {
   data %>%
     mutate(outcome = factor(
@@ -111,7 +116,17 @@ plot_correlation_by_vars <- function(data, mapping, ...) {
     # Add other ggpairs arguments (diag, upper, columns, etc.) as needed
   )
 }
-# new additions
+impute_nas_via_mice <- function(data){
+  mice_output <- mice::mice(data, m = 1, method = "pmm", seed = 123, printFlag = FALSE)
+  pima_imputed_by_mice <- mice::complete(mice_output, 1)
+  pima_imputed_by_mice %>%
+    mutate(outcome = factor(
+      outcome,
+      levels = c(0, 1),
+      labels = c("nondiabetic", "diabetic")
+    )
+  )
+}
 screen_for_best_model <- function(data_train, data_folds) {
   # recipes ----
   base_recipe <- recipe(formula = outcome ~ ., data = data_train)
@@ -330,7 +345,6 @@ extract_tuning_parameters <- function(data, model_id, metric) {
     extract_workflow_set_result(id = model_id) %>%
     select_best(metric = metric)
 }
-# finalize
 pull_best_model_results <- function(data, model_id) {
   data %>%
     extract_workflow_set_result(model_id) %>%
