@@ -226,8 +226,11 @@ read_in_csv_file <- function(data, ...) {
     dplyr::rename(dbf = diabetes_pedigree_function)
 }
 screen_for_best_model <- function(data_train, data_folds) {
+  
+  
   # recipes ----
-  base_recipe <- recipe(formula = outcome ~ ., data = data_train)
+  base_recipe <- recipe(formula = outcome ~ ., data = data_train) %>% 
+    step_impute_knn(all_predictors(), neighbors = 5)
 
   normalized_recipe <-
     base_recipe %>%
@@ -268,7 +271,7 @@ screen_for_best_model <- function(data_train, data_folds) {
     ) %>%
     set_engine("brulee", verbose = F) %>%
     set_mode("classification")
-  # mars ----
+  ## mars ----
   mars_spec <-
     mars(
       num_terms = tune(),
@@ -277,7 +280,7 @@ screen_for_best_model <- function(data_train, data_folds) {
     ) %>%
     set_engine("earth", nfold = 10) %>%
     set_mode("classification")
-  # rpart ----
+  ## rpart ----
   rpart_spec <-
     decision_tree(
       tree_depth = tune(),
@@ -287,7 +290,7 @@ screen_for_best_model <- function(data_train, data_folds) {
     set_engine("rpart") %>%
     set_mode("classification")
 
-  # random forrest ----
+  ## random forrest ----
   rf_spec <-
     rand_forest(
       mtry = tune(),
@@ -296,7 +299,7 @@ screen_for_best_model <- function(data_train, data_folds) {
     ) %>%
     set_engine("ranger") %>%
     set_mode("classification")
-  # knn ----
+  ## knn ----
   knn_spec <-
     nearest_neighbor(
       neighbors = tune(),
