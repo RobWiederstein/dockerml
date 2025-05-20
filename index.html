@@ -134,7 +134,7 @@ window.Quarto = {
   <li><a href="#model-roc-curves" id="toc-model-roc-curves" class="nav-link" data-scroll-target="#model-roc-curves"><span class="header-section-number">7.4</span> Model ROC Curves</a></li>
   <li><a href="#models-ranked" id="toc-models-ranked" class="nav-link" data-scroll-target="#models-ranked"><span class="header-section-number">7.5</span> Models Ranked</a></li>
   <li><a href="#best-tuning-parameters-for-mars" id="toc-best-tuning-parameters-for-mars" class="nav-link" data-scroll-target="#best-tuning-parameters-for-mars"><span class="header-section-number">7.6</span> Best Tuning Parameters for MARS</a></li>
-  <li><a href="#mars-confusion-matrix" id="toc-mars-confusion-matrix" class="nav-link" data-scroll-target="#mars-confusion-matrix"><span class="header-section-number">7.7</span> MARS Confusion Matrix</a></li>
+  <li><a href="#random-forest-confusion-matrix" id="toc-random-forest-confusion-matrix" class="nav-link" data-scroll-target="#random-forest-confusion-matrix"><span class="header-section-number">7.7</span> Random Forest Confusion Matrix</a></li>
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">8</span> Conclusion</a></li>
   <li><a href="#appendix---raw-data" id="toc-appendix---raw-data" class="nav-link" data-scroll-target="#appendix---raw-data">Appendix - Raw Data</a></li>
@@ -176,8 +176,8 @@ window.Quarto = {
 <p>The workflow proceeds according to the chart below.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="visNetwork html-widget html-fill-item" id="htmlwidget-b5eafbf948554ee8f588" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-b5eafbf948554ee8f588">{"x":{"nodes":{"name":["best_model_results","downloaded_file_info","final_cm","model_results","model_test_results","pima_data","pima_data_url","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_conf_matrix","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_model_results","plot_raw_missing","plot_raw_outliers","plot_ROC_curve","plot_tuning_grid","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_model_results","tbl_raw_summary_0","tbl_raw_summary_1","tbl_test_results","tbl_tuning_parameters"],"type":["stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem"],"description":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"status":["uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.041,0.104,0.002,1218.45,3.006,0.05,0.001,0.008,0.19,0.06900000000000001,0.007,0.005,0.01,0.001,0.002,0.044,0.054,0.04,0.02,1.428,0.15,0.128,12.257,0.102,0.011,0.014,0.913,0.015,0.016,0.001,0.041],"bytes":[250,305,228,4284540,31950176,23105,0,14395,12790,12557,12853,12763,14482,3200,10064,16865791,97026,1066428,1097419,19475553,1084074,1045226,12741512,8579046,624,633,485,636,635,301,250],"branches":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"label":["best_model_results","downloaded_file_info","final_cm","model_results","model_test_results","pima_data","pima_data_url","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_conf_matrix","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_model_results","plot_raw_missing","plot_raw_outliers","plot_ROC_curve","plot_tuning_grid","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_model_results","tbl_raw_summary_0","tbl_raw_summary_1","tbl_test_results","tbl_tuning_parameters"],"color":["#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823"],"id":["best_model_results","downloaded_file_info","final_cm","model_results","model_test_results","pima_data","pima_data_url","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_conf_matrix","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_model_results","plot_raw_missing","plot_raw_outliers","plot_ROC_curve","plot_tuning_grid","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_model_results","tbl_raw_summary_0","tbl_raw_summary_1","tbl_test_results","tbl_tuning_parameters"],"level":[11,3,13,10,12,2,1,9,6,3,4,5,7,8,8,14,7,7,7,11,5,5,11,11,7,7,11,5,5,13,11],"shape":["dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot"]},"edges":{"from":["model_results","pima_data","model_test_results","pima_train","pima_folds","best_model_results","model_results","pima_split","pima_data_url","pima_train","pima_raw_ol_to_na","pima_data","pima_raw","pima_raw_converted","pima_imputed","pima_split","pima_split","final_cm","pima_imputed","pima_imputed","pima_imputed","model_results","pima_raw_converted","pima_raw_converted","model_results","model_results","pima_imputed","pima_imputed","model_results","pima_raw_converted","pima_raw_converted","model_test_results","model_results"],"to":["best_model_results","downloaded_file_info","final_cm","model_results","model_results","model_test_results","model_test_results","model_test_results","pima_data","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_conf_matrix","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_model_results","plot_raw_missing","plot_raw_outliers","plot_ROC_curve","plot_tuning_grid","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_model_results","tbl_raw_summary_0","tbl_raw_summary_1","tbl_test_results","tbl_tuning_parameters"],"color":["#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823"],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":0.5},"layout":{"hierarchical":{"enabled":true,"levelSeparation":150,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem"],"color":["#354823","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+<div class="visNetwork html-widget html-fill-item" id="htmlwidget-c42cadae009d3f9c4611" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-c42cadae009d3f9c4611">{"x":{"nodes":{"name":["best_model_results","data_to_model","downloaded_file_info","final_cm","model_results","model_test_results","pima_data","pima_data_url","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_conf_matrix","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_model_results","plot_raw_missing","plot_raw_outliers","plot_ROC_curve","plot_tuning_grid","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_model_results","tbl_raw_summary_0","tbl_raw_summary_1","tbl_test_results","tbl_tuning_parameters"],"type":["stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem"],"description":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"status":["uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.06,0.003,0.103,0.003,1519.394,0.8129999999999999,0.12,0.001,0.008,0.189,0.06900000000000001,0.007,0.005,0.014,0.001,0.001,0.043,0.038,0.054,0.021,1.611,0.147,0.123,13.565,0.08599999999999999,0.011,0.012,0.956,0.015,0.016,0.001,0.046],"bytes":[229,12819,304,230,4601912,22747532,23105,0,14402,12790,12557,12853,12763,14452,3354,10104,12336306,97026,1066393,1097419,10676886,1084074,1045034,13888112,18401002,624,633,486,636,635,299,229],"branches":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"label":["best_model_results","data_to_model","downloaded_file_info","final_cm","model_results","model_test_results","pima_data","pima_data_url","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_conf_matrix","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_model_results","plot_raw_missing","plot_raw_outliers","plot_ROC_curve","plot_tuning_grid","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_model_results","tbl_raw_summary_0","tbl_raw_summary_1","tbl_test_results","tbl_tuning_parameters"],"color":["#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823"],"id":["best_model_results","data_to_model","downloaded_file_info","final_cm","model_results","model_test_results","pima_data","pima_data_url","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_conf_matrix","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_model_results","plot_raw_missing","plot_raw_outliers","plot_ROC_curve","plot_tuning_grid","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_model_results","tbl_raw_summary_0","tbl_raw_summary_1","tbl_test_results","tbl_tuning_parameters"],"level":[10,5,3,12,9,11,2,1,8,6,3,4,5,6,7,7,13,7,7,7,10,5,5,10,10,7,7,10,5,5,12,10],"shape":["dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot"]},"edges":{"from":["model_results","pima_raw_converted","pima_data","model_test_results","pima_train","pima_folds","best_model_results","pima_split","model_results","pima_data_url","pima_train","pima_raw_ol_to_na","pima_data","pima_raw","pima_raw_converted","data_to_model","pima_split","pima_split","final_cm","pima_imputed","pima_imputed","pima_imputed","model_results","pima_raw_converted","pima_raw_converted","model_results","model_results","pima_imputed","pima_imputed","model_results","pima_raw_converted","pima_raw_converted","model_test_results","model_results"],"to":["best_model_results","data_to_model","downloaded_file_info","final_cm","model_results","model_results","model_test_results","model_test_results","model_test_results","pima_data","pima_folds","pima_imputed","pima_raw","pima_raw_converted","pima_raw_ol_to_na","pima_split","pima_test","pima_train","plot_conf_matrix","plot_imputed_corr","plot_imputed_missing","plot_imputed_outliers","plot_model_results","plot_raw_missing","plot_raw_outliers","plot_ROC_curve","plot_tuning_grid","tbl_imputed_summary_0","tbl_imputed_summary_1","tbl_model_results","tbl_raw_summary_0","tbl_raw_summary_1","tbl_test_results","tbl_tuning_parameters"],"color":["#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823"],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":0.5},"layout":{"hierarchical":{"enabled":true,"levelSeparation":150,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem"],"color":["#354823","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
@@ -210,15 +210,15 @@ window.Quarto = {
 </tr>
 <tr class="even">
 <td style="text-align: left;">mtime</td>
-<td style="text-align: left;">2025-05-20 10:53:13</td>
+<td style="text-align: left;">2025-05-20 12:27:34</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">ctime</td>
-<td style="text-align: left;">2025-05-20 10:53:13</td>
+<td style="text-align: left;">2025-05-20 12:27:34</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">atime</td>
-<td style="text-align: left;">2025-05-20 10:53:13</td>
+<td style="text-align: left;">2025-05-20 12:27:34</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">uid</td>
@@ -902,18 +902,18 @@ p = \frac{1}{1 + \exp(-z)}
 <table class="lightable-classic table table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
-<th style="text-align: right;" data-quarto-table-cell-role="th">num_terms</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">prod_degree</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">prune_method</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mtry</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">trees</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">min_n</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">.config</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: left;">forward</td>
-<td style="text-align: left;">Preprocessor1_Model18</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1500</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: left;">Preprocessor1_Model19</td>
 </tr>
 </tbody>
 </table>
@@ -969,66 +969,66 @@ p = \frac{1}{1 + \exp(-z)}
 <tbody>
 <tr class="odd">
 <td style="text-align: right;">1</td>
-<td style="text-align: left;">base_mars</td>
-<td style="text-align: left;">Preprocessor1_Model18</td>
+<td style="text-align: left;">base_xgboost</td>
+<td style="text-align: left;">Preprocessor1_Model14</td>
 <td style="text-align: left;">roc_auc</td>
-<td style="text-align: right;">0.8456710</td>
+<td style="text-align: right;">0.8458820</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">2</td>
-<td style="text-align: left;">normalized_mlp_brulee</td>
-<td style="text-align: left;">Preprocessor1_Model12</td>
+<td style="text-align: left;">base_random_forest</td>
+<td style="text-align: left;">Preprocessor1_Model19</td>
 <td style="text-align: left;">roc_auc</td>
-<td style="text-align: right;">0.8424080</td>
+<td style="text-align: right;">0.8457684</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">3</td>
-<td style="text-align: left;">base_random_forest</td>
-<td style="text-align: left;">Preprocessor1_Model11</td>
+<td style="text-align: left;">base_mars</td>
+<td style="text-align: left;">Preprocessor1_Model19</td>
 <td style="text-align: left;">roc_auc</td>
-<td style="text-align: right;">0.8416342</td>
+<td style="text-align: right;">0.8457522</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4</td>
 <td style="text-align: left;">normalized_neural_network</td>
-<td style="text-align: left;">Preprocessor1_Model16</td>
+<td style="text-align: left;">Preprocessor1_Model09</td>
 <td style="text-align: left;">roc_auc</td>
-<td style="text-align: right;">0.8407522</td>
+<td style="text-align: right;">0.8429870</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">5</td>
-<td style="text-align: left;">base_xgboost</td>
-<td style="text-align: left;">Preprocessor1_Model06</td>
+<td style="text-align: left;">normalized_mlp_brulee</td>
+<td style="text-align: left;">Preprocessor1_Model18</td>
 <td style="text-align: left;">roc_auc</td>
-<td style="text-align: right;">0.8390639</td>
+<td style="text-align: right;">0.8386580</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">6</td>
 <td style="text-align: left;">normalized_log_regression</td>
-<td style="text-align: left;">Preprocessor1_Model04</td>
+<td style="text-align: left;">Preprocessor1_Model18</td>
 <td style="text-align: left;">roc_auc</td>
-<td style="text-align: right;">0.8382955</td>
+<td style="text-align: right;">0.8341937</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7</td>
 <td style="text-align: left;">base_k_nrst_nghbr</td>
-<td style="text-align: left;">Preprocessor1_Model14</td>
+<td style="text-align: left;">Preprocessor1_Model11</td>
 <td style="text-align: left;">roc_auc</td>
-<td style="text-align: right;">0.8300812</td>
+<td style="text-align: right;">0.8320292</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">8</td>
 <td style="text-align: left;">normalized_k_nrst_nghbr</td>
-<td style="text-align: left;">Preprocessor1_Model14</td>
+<td style="text-align: left;">Preprocessor1_Model11</td>
 <td style="text-align: left;">roc_auc</td>
-<td style="text-align: right;">0.8300812</td>
+<td style="text-align: right;">0.8320292</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">9</td>
 <td style="text-align: left;">base_rpart</td>
-<td style="text-align: left;">Preprocessor1_Model15</td>
+<td style="text-align: left;">Preprocessor1_Model14</td>
 <td style="text-align: left;">roc_auc</td>
-<td style="text-align: right;">0.8022781</td>
+<td style="text-align: right;">0.8168669</td>
 </tr>
 </tbody>
 </table>
@@ -1046,18 +1046,18 @@ p = \frac{1}{1 + \exp(-z)}
 <table class="lightable-classic table table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
-<th style="text-align: right;" data-quarto-table-cell-role="th">num_terms</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">prod_degree</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">prune_method</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">mtry</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">trees</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">min_n</th>
 <th style="text-align: left;" data-quarto-table-cell-role="th">.config</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: left;">forward</td>
-<td style="text-align: left;">Preprocessor1_Model18</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1500</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: left;">Preprocessor1_Model19</td>
 </tr>
 </tbody>
 </table>
@@ -1067,8 +1067,8 @@ p = \frac{1}{1 + \exp(-z)}
 </div>
 </div>
 </section>
-<section id="mars-confusion-matrix" class="level2" data-number="7.7">
-<h2 data-number="7.7" class="anchored" data-anchor-id="mars-confusion-matrix"><span class="header-section-number">7.7</span> MARS Confusion Matrix</h2>
+<section id="random-forest-confusion-matrix" class="level2" data-number="7.7">
+<h2 data-number="7.7" class="anchored" data-anchor-id="random-forest-confusion-matrix"><span class="header-section-number">7.7</span> Random Forest Confusion Matrix</h2>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -1083,7 +1083,7 @@ p = \frac{1}{1 + \exp(-z)}
 <section id="conclusion" class="level1" data-number="8">
 <h1 data-number="8"><span class="header-section-number">8</span> Conclusion</h1>
 <p>The purpose of this report was to create a reproducible pipeline such that it could be recreated. However, one note is that the results from the ML models were poor: the false negatives are way too high, in my opinion. In the real world, a number of people would have been told that they did not have diabetes when they in fact did. This would have to be addressed in the future modeling and hopefully the overall accuracy, both for the positives and negatives, would increase.</p>
-<p><em>Report generated at 2025-05-20 11:14:41.840713</em></p>
+<p><em>Report generated at 2025-05-20 12:54:05.12667</em></p>
 </section>
 <section id="appendix---raw-data" class="level1 unnumbered">
 <h1 class="unnumbered">Appendix - Raw Data</h1>
