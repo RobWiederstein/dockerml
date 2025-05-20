@@ -46,7 +46,15 @@ tar_plan(
   plot_imputed_corr = plot_correlation_by_vars(pima_imputed),
   plot_imputed_missing = naniar::vis_miss(pima_imputed),
   # split datasets ----
-  pima_split = initial_split(pima_imputed, prop = 0.80, strata = outcome),
+  data_to_model = {
+    pima_raw_converted %>% 
+      mutate(outcome = factor(
+      outcome,
+      levels = c(0, 1),
+      labels = c("nondiabetic", "diabetic")
+    ))
+  },
+  pima_split = initial_split(data_to_model, prop = 0.80, strata = outcome),
   pima_train = training(pima_split),
   pima_test = testing(pima_split),
   pima_folds = vfold_cv(pima_train, strata = "outcome", v = 10),
@@ -55,11 +63,11 @@ tar_plan(
   tbl_model_results = extract_model_results(model_results),
   plot_model_results = plot_model_results(model_results),
   plot_ROC_curve = plot_model_roc_curve(model_results),
-  tbl_tuning_parameters = extract_tuning_parameters(model_results, "base_mars", "roc_auc"),
-  plot_tuning_grid = workflowsets::autoplot(model_results, id = "base_mars", metric = "roc_auc"),
+  tbl_tuning_parameters = extract_tuning_parameters(model_results, "base_random_forest", "roc_auc"),
+  plot_tuning_grid = workflowsets::autoplot(model_results, id = "base_random_forest", metric = "roc_auc"),
   # finalize ----
-  best_model_results = pull_best_model_results(model_results, "base_mars"),
-  model_test_results = fit_best_model(model_results, best_model_results, pima_split, "base_mars"),
+  best_model_results = pull_best_model_results(model_results, "base_random_forest"),
+  model_test_results = fit_best_model(model_results, best_model_results, pima_split, "base_random_forest"),
   tbl_test_results = collect_metrics(model_test_results),
   final_cm = conf_mat(model_test_results[[5]][[1]], truth = outcome, estimate = .pred_class),
   plot_conf_matrix = plot_conf_matrix(final_cm)

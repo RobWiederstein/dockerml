@@ -213,7 +213,6 @@ format_table(best_model_results)
 ```{r}
 plot_model_results
 ```
-
 ## Receiver Operator Curve
 
 The Receiver Operating Characteristic (ROC) curve is a fundamental tool in machine learning and statistics for evaluating the performance of binary classification models. Originating from signal detection theory developed during World War II to analyze radar signals, the ROC curve graphically illustrates a classifier's diagnostic ability across all possible classification thresholds. It plots the True Positive Rate (TPR), also known as sensitivity or recall (the proportion of actual positives correctly identified), on the Y-axis against the False Positive Rate (FPR), which is equal to 1 minus specificity (the proportion of actual negatives incorrectly identified as positive), on the X-axis. Each point on the curve corresponds to a specific threshold used to convert the model's continuous output (like a probability score) into a binary decision (0 or 1); varying this threshold traces the curve. A model with better discriminative power will have a curve that bows towards the top-left corner (representing 100% TPR and 0% FPR), while a model performing no better than random chance lies along the diagonal line (TPR = FPR). The overall performance across all thresholds is commonly summarized by the Area Under the Curve (AUC or AUROC), a value ranging from 0.5 (random chance) to 1.0 (perfect classification), representing the probability that the model ranks a randomly chosen positive instance higher than a randomly chosen negative one.
@@ -239,7 +238,7 @@ format_table(tbl_tuning_parameters)
 ```
 
 
-## MARS Confusion Matrix
+## Random Forest Confusion Matrix
 
 
 ```{r}
