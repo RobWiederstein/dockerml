@@ -190,6 +190,14 @@ $$
 
 As a parametric model, logistic regression learns the coefficients $$(β i)$$ from the training data, typically through an iterative optimization process called Maximum Likelihood Estimation (MLE). The final output probability (p) is then usually converted into a class prediction by applying a threshold (commonly 0.5).
 
+## MARS
+
+Multivariate Adaptive Regression Splines (MARS) is a non-parametric regression technique adept at modeling complex, non-linear relationships between predictor variables and a response variable. The algorithm operates through a two-stage process: a forward pass that iteratively adds piecewise linear basis functions (hinge functions) to capture non-linearities and interactions. At the heart of most MARS algorithms is the model's predictive equation, which takes the general form:
+
+$$\hat{f}(x)=β0 +m=1∑M βm Bm (x)$$
+
+where $\hat{f}(x)$ is the predicted response, $β0$ is the intercept, $Bm (x)$ are the basis functions (often hinge functions or products thereof), and $βm$ are their coefficients, determined through a process that typically leads to an initially overfit model. Subsequently, a backward pruning pass systematically removes less contributory terms, typically using Generalized Cross-Validation, to enhance model generalization and select the final set of M basis functions. This adaptive approach allows MARS to automatically identify important variables and their interactions, offering a flexible alternative to traditional linear models.
+
 # Results
 
 
