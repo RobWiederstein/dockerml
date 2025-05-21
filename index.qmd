@@ -231,14 +231,18 @@ format_table(tbl_model_results)
 ```
 
 
-## Best Tuning Parameters for MARS
+## Best Tuning Parameters
+
+`r top_model`
 
 ```{r}
 format_table(tbl_tuning_parameters)
 ```
 
 
-## Random Forest Confusion Matrix
+## Confusion Matrix
+
+`r top_model`
 
 
 ```{r}
