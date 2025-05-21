@@ -19,6 +19,7 @@ index_files/
 index.html
 /*.html
 README_files/
+TO_DO.md
 
 # swap
 .gitignore.swp
@@ -29,3 +30,4 @@ README_files/
 .httr-oauth
 *.tar
 .quarto
+

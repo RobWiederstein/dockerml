@@ -37,9 +37,8 @@ tar_plan(
   plot_raw_missing = naniar::vis_miss(pima_raw_converted),
   plot_raw_outliers = plot_scaled_outliers_3_sd_or_more(pima_raw_converted),
   pima_raw_ol_to_na = convert_outliers_to_na(pima_raw_converted, sd_threshold = 3),
-  # imputation ----
-  pima_imputed = impute_nas_via_mice(pima_raw_ol_to_na),
   # after imputation ----
+  pima_imputed = impute_nas_via_mice(pima_raw_ol_to_na),
   tbl_imputed_summary_0 = summarize_pima_raw(pima_imputed, diabetes = "diabetic"),
   tbl_imputed_summary_1 = summarize_pima_raw(pima_imputed, diabetes = "nondiabetic"),
   plot_imputed_outliers = plot_scaled_outliers_3_sd_or_more(pima_imputed),
@@ -63,11 +62,14 @@ tar_plan(
   tbl_model_results = extract_model_results(model_results),
   plot_model_results = plot_model_results(model_results),
   plot_ROC_curve = plot_model_roc_curve(model_results),
-  tbl_tuning_parameters = extract_tuning_parameters(model_results, "base_random_forest", "roc_auc"),
-  plot_tuning_grid = workflowsets::autoplot(model_results, id = "base_random_forest", metric = "roc_auc"),
+  # best model ----
+  metric_of_choice = "roc_auc",
+  top_model = pull_top_model_name(model_results, metric_of_choice),
+  tbl_tuning_parameters = extract_tuning_parameters(model_results, top_model, metric_of_choice),
+  plot_tuning_grid = workflowsets::autoplot(model_results, id = top_model, metric = metric_of_choice),
   # finalize ----
-  best_model_results = pull_best_model_results(model_results, "base_random_forest"),
-  model_test_results = fit_best_model(model_results, best_model_results, pima_split, "base_random_forest"),
+  best_model_results = pull_best_model_results(model_results, top_model),
+  model_test_results = fit_best_model(model_results, best_model_results, pima_split, top_model),
   tbl_test_results = collect_metrics(model_test_results),
   final_cm = conf_mat(model_test_results[[5]][[1]], truth = outcome, estimate = .pred_class),
   plot_conf_matrix = plot_conf_matrix(final_cm)
