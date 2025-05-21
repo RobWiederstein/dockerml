@@ -217,6 +217,17 @@ pull_best_model_results <- function(data, model_id) {
     extract_workflow_set_result(model_id) %>%
     select_best(metric = "roc_auc")
 }
+pull_top_model_name <- function(data, chosen_metric){
+  ranked_wflows <- 
+    data %>% 
+    rank_results(
+      rank_metric = chosen_metric,
+      select_best = TRUE
+    ) %>% 
+    slice_head(n = 1) %>% 
+    pull(wflow_id)
+  ranked_wflows
+}
 read_in_csv_file <- function(data, ...) {
   vroom(
     data,
