@@ -46,12 +46,12 @@ tar_plan(
   plot_imputed_missing = naniar::vis_miss(pima_imputed),
   # split datasets ----
   data_to_model = {
-    pima_raw_converted %>% 
+    pima_raw_converted %>%
       mutate(outcome = factor(
-      outcome,
-      levels = c(0, 1),
-      labels = c("nondiabetic", "diabetic")
-    ))
+        outcome,
+        levels = c(0, 1),
+        labels = c("nondiabetic", "diabetic")
+      ))
   },
   pima_split = initial_split(data_to_model, prop = 0.80, strata = outcome),
   pima_train = training(pima_split),

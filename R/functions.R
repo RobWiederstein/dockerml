@@ -237,10 +237,8 @@ read_in_csv_file <- function(data, ...) {
     dplyr::rename(dbf = diabetes_pedigree_function)
 }
 screen_for_best_model <- function(data_train, data_folds) {
-  
-  
   # recipes ----
-  base_recipe <- recipe(formula = outcome ~ ., data = data_train) %>% 
+  base_recipe <- recipe(formula = outcome ~ ., data = data_train) %>%
     step_impute_knn(all_predictors(), neighbors = 5)
 
   normalized_recipe <-
