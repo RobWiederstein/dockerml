@@ -31,6 +31,7 @@ citeproc: false
 ---
 
 ```{r setup, include=FALSE, eval=TRUE}
+library("dplyr")
 library("targets")
 library("quarto")
 library("tarchetypes")
@@ -260,6 +261,18 @@ _Report generated at `r Sys.time()`_
 ```{r}
 format_table(head(pima_raw, 10))
 ```
+
+# Appendix - Benchmarks {.unnumbered}
+
+[Altair Rapid Miner](https://altair.com/altair-rapidminer) was used to double check both algorithm selection and performance.  All algorithms performed worse than the tuned models above and there were no outstanding performers either.
+
+```{r}
+tbl_rm <- readr::read_csv(here::here("resources", "rapid_miner", "rapid_miner_results.csv")) %>% 
+  mutate(across(is.numeric, ~round(.x, 3))) %>% 
+  arrange(desc(AUC))
+format_table(tbl_rm)
+```
+
 
 
 
