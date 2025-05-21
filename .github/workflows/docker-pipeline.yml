@@ -37,11 +37,20 @@ jobs:
         run: chmod +x ./run_pipeline.sh
 
       - name: Run the full pipeline
-        # Your run_pipeline.sh calls 'docker compose up --build'.
-        # The '--build' flag inside it will be very fast here because
-        # the 'dockerml-project:latest' image was just built and loaded
-        # by the previous GitHub Actions step.
         run: ./run_pipeline.sh
+
+      - name: Check Links in Report and Markdown files
+        uses: lycheeverse/lychee-action@v1.10.0
+        with:
+          args: >
+            --verbose
+            --no-progress
+            --accept 200,202,204,301,302,303,304,307,308
+            --exclude "https://www.linkedin.com/.*"
+            --exclude "https://twitter.com/.*"
+            --exclude "http://localhost:.*"
+            "./docs/**/*.html"  # Check all HTML files in the docs directory
+            "**/*.md"           # Also check Markdown files in the repo
 
       - name: Deploy report to GitHub Pages
         # Run only on successful pushes to main or master
@@ -50,8 +59,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
-          # Optional:
-          # cname: your.custom.domain.com
-          # user_name: 'github-actions[bot]'
-          # user_email: 'github-actions[bot]@users.noreply.github.com'
-          # commit_message: 'Deploy report to GitHub Pages'
